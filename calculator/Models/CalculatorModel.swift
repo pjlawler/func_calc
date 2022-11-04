@@ -12,6 +12,11 @@ class CalculatorModel {
     static let shared = CalculatorModel()
     private init() {}
     
+    let network = NetworkManager.shared
+    let storage = LocalStorageManager.shared
+    
+    var exchangeRates: RateData!
+    
     // registers
     var displayRegister: String!
     var mathRegister: String!
@@ -199,6 +204,7 @@ class CalculatorModel {
         mode = .operation_complete
     }
     
+    
     private func setDisplayRegister(with decimal:Double) {
         if decimal == Double(Int(decimal)) {
             displayRegister = String(Int(decimal))
@@ -207,8 +213,57 @@ class CalculatorModel {
         }
     }
     
+    
     private func setDisplayRegister(with errorText:String) {
         displayRegister = errorText
         mode = .displaying_error
     }
+}
+
+extension CalculatorModel {
+    
+    func updateExchangeRates() {
+        
+        // gets the rates, if any, that are saved in local storage and stores them in the local variable
+        retrieveRates()
+        
+        // if the rates need to be updated, it downloads them from through the network manager
+        if exchangeRates == nil || exchangeRates.isOverHourOld {
+            network.getRates(for: "USD") { [weak self] result in
+                guard let self = self else {return }
+                switch result {
+                case .success(let success):
+                    
+                    // stores the rates in the local variable
+                    self.exchangeRates = success
+                    print("downloaded the latest rates!")
+                    
+                    // saves the downloaded rates to local storage
+                    if self.storage.saveExchangeRates(success) {
+                        print("rates were saved to local storage!")
+                    }
+                case .failure(let failure):
+                    
+                    print("network manager error - \(failure)")
+                }
+            }
+        }
+    }
+    
+    private func retrieveRates() {
+        storage.retrieveRateData { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                self.exchangeRates = success
+                print("retrieved rates from local storage")
+
+            case .failure(let failure):
+                print("local storage manager error - \(failure)")
+            }
+        }
+    }
+    
+    
+    
 }

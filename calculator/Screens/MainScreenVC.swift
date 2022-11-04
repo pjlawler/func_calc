@@ -15,8 +15,7 @@ class MainScreenVC: UIViewController {
     let calcKeypad = CalcKeypad()
        
     let model = CalculatorModel.shared
-    let network = NetworkManager.shared
-    
+        
     var tempRates: RateData!
     
     
@@ -30,6 +29,9 @@ class MainScreenVC: UIViewController {
     func configureViewController() {
         
         view.backgroundColor = .systemBackground
+        
+        // loads the latest exchange rates
+        model.updateExchangeRates()
         
         // delegates
         calcKeypad.keypadDelegate = self
@@ -84,24 +86,6 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
     func keyboardTapped(button: CalcButton) {
 
         // called when any keypad button is tapped
-
-        // working code to test network manager
-        if button.tag == 16 {
-            network.getRates(for: "USD") { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                    
-                case .success(let rates):
-                    self.tempRates = rates
-                    print(self.tempRates as Any)
-                    
-                case .failure(let error):
-                    print(error)
-                }
-            }
-            return
-        }
         
         guard let buttonText = button.titleLabel?.text else { return }
         model.keypadTapped(key: buttonText)

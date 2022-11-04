@@ -56,4 +56,35 @@ struct Convert {
     }
 }
 
+struct Utilities {
+    
+    func isOverHourOld(_ timeStamp: Double?) -> Bool {
+        
+        // returns true if timeStamp is more than an hour old, or if the timeStamp is nil
+        
+        guard let _ = timeStamp else { return true }
+        return (Date().timeIntervalSince1970 - timeStamp!) > 3600
+    }
+    
+    func dateOf(_ timeStamp: Double) -> String {
+        
+        let date = Date(timeIntervalSince1970: timeStamp)
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        
+        return formatter.string(from: date)
+    }
+    
+    func timeOf(_ timeStamp: Double) -> String {
+        let date = Date(timeIntervalSince1970: timeStamp)
+        let formatter = DateFormatter()
+        formatter.timeStyle = .medium
+        
+        return formatter.string(from: date)
+    }
+    
+    
+    
+}
+
 
