@@ -16,7 +16,6 @@ class CalculatorModel {
     var displayRegister: String!
     var mathRegister: String!
     var operationRegister: String!
-    var secondaryOperationRegister: String!
 
     var mode: CalcModes = .all_clear
     
@@ -44,7 +43,6 @@ class CalculatorModel {
 
         displayRegister = nil
         operationRegister = nil
-        secondaryOperationRegister = nil
         mathRegister = nil
         mode = .all_clear
     }
