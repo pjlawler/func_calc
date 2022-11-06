@@ -28,8 +28,8 @@ class CalcButton: UIButton {
         
         // sets background color
         switch number {
-        case 3, 7, 11, 15, 19: backgroundColor = .systemOrange
-        case 0...2: backgroundColor = .systemGray3
+        case 13, 17, 21, 25, 29: backgroundColor = .systemOrange
+        case 10...12: backgroundColor = .systemGray
         default: backgroundColor = .systemIndigo
         }
         
@@ -46,8 +46,13 @@ class CalcButton: UIButton {
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: size)
         ])
-        
     }
+    
+    
+    func updateTitle(title: String) {
+        setTitle(title, for: .normal)
+    }
+    
     
     func unhighlight() {
         // sets button back to normal state
@@ -55,12 +60,14 @@ class CalcButton: UIButton {
         backgroundColor = .systemOrange.withAlphaComponent(1.0)
     }
     
+    
     func highlight() {
         // updates styling when highlighting button
         titleLabel?.font = Fonts.keypadButton_hl
         backgroundColor = .systemOrange.withAlphaComponent(0.5)
     }
-        
+       
+    
     func flash() {
         let flash                       = CABasicAnimation(keyPath: "opacity")
         flash.duration                  = 0.1

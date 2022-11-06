@@ -22,7 +22,10 @@ struct NetworkManager {
     
     private init(){}
     
-    func getRates(for baseCurrency: String, completed: @escaping (Result<RateData, NetworkError>) -> Void) {
+    func getRates(completed: @escaping (Result<RateData, NetworkError>) -> Void) {
+        
+        // update to get the current base country from user defaults
+        let baseCurrency = "USD"
         
         let endpoint = baseURL + "\(baseCurrency)"
         
@@ -71,7 +74,7 @@ struct NetworkManager {
         
     }
     
-    func formatRateData(data: OpenExchangeRates) -> RateData {
+    private func formatRateData(data: OpenExchangeRates) -> RateData {
         
         // converts the data received into an object that has the rates in an array vs the json structure
         

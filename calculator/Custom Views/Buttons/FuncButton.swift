@@ -23,7 +23,7 @@ class FuncButton: UIButton {
         super.init(frame: .zero)
        
         // sets background color
-        backgroundColor = .systemGray
+        backgroundColor = .systemBrown.withAlphaComponent(0.75)
         
         // styles button
         setTitleColor(.label, for: .normal)
@@ -38,7 +38,6 @@ class FuncButton: UIButton {
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: size)
         ])
-        
     }
     
     func flash() {

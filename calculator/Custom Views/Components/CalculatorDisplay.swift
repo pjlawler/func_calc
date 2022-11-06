@@ -15,8 +15,8 @@ class CalculatorDisplay: UIView {
     
     // creates a black view container with a label inside to display the calculator's data
     
-    // main readout label
     let main = UILabel(frame: .zero)
+    let aux = UILabel(frame: .zero)
     
     // used to access the data from the display register
     let model = CalculatorModel.shared
@@ -43,8 +43,6 @@ class CalculatorDisplay: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         layer.cornerRadius = 10
         clipsToBounds = false
-        
-        // styles the main label text
         main.backgroundColor = .clear
         main.textColor = .white
         main.textAlignment = .right
@@ -52,18 +50,28 @@ class CalculatorDisplay: UIView {
         main.font = Fonts.mainDisplayText
         main.minimumScaleFactor = 0.5
         main.adjustsFontSizeToFitWidth = true
-        main.text = "0."
+        main.text = "0"
+        aux.backgroundColor = .clear
+        aux.textColor = .white
+        aux.textAlignment = .left
+        aux.numberOfLines = 3
+        aux.minimumScaleFactor = 0.8
+        aux.font = Fonts.auxDisplayText
+        aux.text = ""
         
-        // adds the main text label to the dissplay
         addSubview(main)
+        addSubview(aux)
         
-        // laysout the lable inside the view container
         main.translatesAutoresizingMaskIntoConstraints = false
+        aux.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            main.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 2.0),
-            main.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2.0),
-            main.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2.0),
+            main.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 4.0),
+            main.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4.0),
+            main.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4.0),
+            aux.topAnchor.constraint(equalTo: topAnchor, constant: 4.0),
+            aux.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4.0),
+            aux.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4.0)
         ])
         
         // adds the gesture recognizer to the view which allows the swipping right action
@@ -71,33 +79,43 @@ class CalculatorDisplay: UIView {
         addGestureRecognizer(swipeGesture)
     }
     
-    @objc func displaySwipedRight(_ sender: Any){
+    
+    @objc private func displaySwipedRight(_ sender: Any){
         displayDelegate.displaySwippedRight()
     }
     
-    func updateDisplay() {
+    
+    private func updateAuxDisplay(_ text: String?) {
+        aux.text = text
+    }
+    
+    
+    func updateMainDisplay() {
+        
+        updateAuxDisplay(model.auxDisplay)
         
         // reformats the display register data to show the user on the main display (i.e. decimal with thousands seperators)
                 
-        var textToDisplay:String?
+        var textToDisplay = model.displayRegister != nil ? model.displayRegister : "0"
+        
+        let timeResult = model.displayResultAsTime != nil ? model.displayResultAsTime! : false
+        
         
         // determines how to format the displayed data depending on the mode and what's in the register.
         
-        if model.mode == .displaying_error {
-            textToDisplay = model.displayRegister
-        }
-                
-        else {
+        if model.displayRegister != nil && model.mode != .displaying_error {
+            
             // operations if the register contains a decimal number
             
-            // converts the display register to a double, if nil will use 0
-            let register: Double = model.displayRegister == nil ? 0.0 : (model.displayRegister as NSString).doubleValue
-            let useScientific = abs(register) > 999999999.9
+            let register = model.doubleValueOf(model.displayRegister)
+            let useScientific = abs(register) > 9999999999.99
+            let showDecimal = model.displayRegister.contains(".") && !useScientific
             var significantDigits = 1
             var trailingZeros = ""
+            let displayAsTime = model.displayRegister.contains(":") || timeResult ? true : false
             
-            if model.displayRegister != nil && !useScientific {
-                
+            if !useScientific {
+
                 // determines max fraction digits and number of trailing zeros (i.e. 1.00000) in the display register
                 
                 // calculates how many digits to the left of the decimal, if any. If none it uses 1 (for a zero placeholder)
@@ -121,18 +139,21 @@ class CalculatorDisplay: UIView {
                 }
             }
             
-            // formats the register as string
-            let formatter =  NumberFormatter()
-            formatter.numberStyle = useScientific ? .scientific : .decimal
-            formatter.exponentSymbol = "e"
-            formatter.groupingSeparator = ","
-            formatter.usesGroupingSeparator = true
-            formatter.alwaysShowsDecimalSeparator = useScientific ? false : true
-            formatter.maximumIntegerDigits = useScientific ? 3 : 9
-            formatter.maximumFractionDigits = useScientific ? 3 : 10 - significantDigits
-            textToDisplay = formatter.string(from: register as NSNumber)! + trailingZeros
+            if displayAsTime {
+                textToDisplay = Convert().doubleToTime(register)
+            }
+            else {
+                let formatter =  NumberFormatter()
+                formatter.numberStyle = useScientific ? .scientific : .decimal
+                formatter.exponentSymbol = "e"
+                formatter.groupingSeparator = ","
+                formatter.usesGroupingSeparator = true
+                formatter.alwaysShowsDecimalSeparator = showDecimal
+                formatter.maximumIntegerDigits = useScientific ? 3 : 10
+                formatter.maximumFractionDigits = useScientific ? 3 : 9 - significantDigits
+                textToDisplay = formatter.string(from: register as NSNumber)! + trailingZeros
+            }
         }
-        
         // sets the label text
         main.text = textToDisplay
     }

@@ -35,18 +35,29 @@ enum DeviceTypes {
 }
 
 struct Convert {
+    
     func timeToDecimal(_ time: String) -> Double {
         
-        guard time.contains(":") else { return 0.0 }
-        
+        let hours: Double!
+        let minutes: Double!
         let timeParts = time.split(separator: ":")
-        let hours: Double = Double(Int(timeParts[0]) ?? 0)
-        let minutes: Double = (timeParts.endIndex > 1 ? Double(Int(timeParts[1]) ?? 0) : 0) / 60
+        
+        switch timeParts.count {
+        case 0:
+            hours = 0
+            minutes = 0
+        case 1:
+            hours = time.last == ":" ? Double(Int(timeParts[0])!) : 0
+            minutes = time.last == ":" ? 0 : Double(Int(timeParts[0])!) / 60
+        default:
+            hours = Double(Int(timeParts[0])!)
+            minutes = Double(Int(timeParts[1])!) / 60
+        }
         
         return hours + minutes
     }
     
-    func decimalToTime(_ number: Double) -> String {
+    func doubleToTime(_ number: Double) -> String {
         
         let hours = String(Int(number))
         var minutes = String(Int(((number - Double(Int(number))) * 60).rounded()))

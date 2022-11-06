@@ -9,6 +9,7 @@ import UIKit
 
 protocol FCKeyboardDelegate {
     func keyboardTapped(button: CalcButton)
+    func colonKeyLongPressed()
 }
 
 class CalcKeypad {
@@ -25,12 +26,11 @@ class CalcKeypad {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-    func configure() {
+    private func configure() {
     
         let buttonSize: CGFloat = (ScreenSize.height / 2 - 38) / 5
-        let buttonLabels = [ "AC", "±", "%", "÷","7","8","9","×","4","5","6","-","1","2","3","+","","0",".","="]
-        var buttonCount = 0
+        let buttonLabels = [ "AC", "±", "%", "÷","7","8","9","×","4","5","6","-","1","2","3","+",":","0",".","="]
+        var buttonCount = 10
        
         // creates the rows for the the keypad
         for _ in 1...5 {
@@ -39,8 +39,13 @@ class CalcKeypad {
             
             // creates the buttons and adds them to the row stack view
             for _ in 1...4 {
-                let button = CalcButton(number: buttonCount, label: buttonLabels[buttonCount], size: buttonSize)
+                let button = CalcButton(number: buttonCount, label: buttonLabels[buttonCount - 10], size: buttonSize)
                 button.addTarget(self, action: #selector(keypadButtonTapped(_:)), for: .touchUpInside)
+                if buttonCount == 26 {
+                    // adds a long press recognizer to the : button
+                    let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(timeButtonLongPressed(_:)))
+                    button.addGestureRecognizer(longPressGesture)
+                }
                 button.tag = buttonCount
                 rowStack.addArrangedSubview(button)
                 buttonCount += 1
@@ -52,16 +57,39 @@ class CalcKeypad {
         
         keypadStack.translatesAutoresizingMaskIntoConstraints = false
     }
-    
-    func updateHighlighted(button: CalcButton) {
-        for tag in [3, 7, 11, 15] {
+   
+    private func updateHighlighted(button: CalcButton) {
+        for tag in [13, 17, 21, 25] {
             let updateButton = keypadStack.viewWithTag(tag) as! CalcButton
             if button.tag != tag { updateButton.unhighlight() } else { updateButton.highlight() }
         }
     }
     
-    @objc func keypadButtonTapped(_ sender: CalcButton) {
+   func updateButtonTitles() {
+       
+      let equalsButton = keypadStack.viewWithTag(29) as! CalcButton
+      let clearButton = keypadStack.viewWithTag(10) as! CalcButton
+        
+        switch model.mode {
+            
+        case .entering_first, .awaiting_second, .entering_second:
+            clearButton.updateTitle(title: "CE")
+            equalsButton.updateTitle(title: "=")
+        
+        default:
+            clearButton.updateTitle(title: "AC")
+            equalsButton.updateTitle(title: "=")
+        }
+    }
+    
+    
+    @objc private func keypadButtonTapped(_ sender: CalcButton) {
         sender.flash()
+        updateHighlighted(button: sender)
         keypadDelegate.keyboardTapped(button: sender)
+    }
+    
+    @objc private func timeButtonLongPressed(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began { keypadDelegate.colonKeyLongPressed() }
     }
 }

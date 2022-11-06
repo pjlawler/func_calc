@@ -4,44 +4,45 @@
 //
 //  Created by Patrick Lawler on 10/31/22.
 //
-
 import UIKit
 
 class MainScreenVC: UIViewController {
     
-    // calculator components
     let display = CalculatorDisplay()
     let funcKeypad = FuncKeypad()
     let calcKeypad = CalcKeypad()
-       
     let model = CalculatorModel.shared
-        
-    var tempRates: RateData!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViewController()
-        layoutCalculator()
+        configureNavbar()
+        configureComponents()
+        model.updateExchangeRates()
     }
     
-    
     func configureViewController() {
-        
         view.backgroundColor = .systemBackground
-        
-        // loads the latest exchange rates
-        model.updateExchangeRates()
-        
-        // delegates
         calcKeypad.keypadDelegate = self
         funcKeypad.functionKeyDelegate = self
         display.displayDelegate = self
     }
+    
+    
+    func configureNavbar() {
+        let functions = UIBarButtonItem(image: UIImage(systemName: "f.cursive.circle") , style: .plain, target: self, action: #selector(navbarFunctionsTapped))
+        let moreInfo = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(navbarMoreInfoTapped))
+        let titleImageView = UIImageView(image: UIImage(named: "FCIcon_trans"))
+        titleImageView.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
+        titleImageView.contentMode = .scaleAspectFit
+        navigationItem.titleView = titleImageView
+        navigationItem.leftBarButtonItems = [functions]
+        navigationItem.rightBarButtonItems = [moreInfo]
+    }
        
     
-    func layoutCalculator() {
-        
+    func configureComponents() {
         // gets the custom button stack from each component
         let functionStack = funcKeypad.functionStack
         let keypadStack = calcKeypad.keypadStack
@@ -52,7 +53,7 @@ class MainScreenVC: UIViewController {
         view.addSubview(keypadStack)
         
         NSLayoutConstraint.activate([
-            display.topAnchor.constraint(equalTo: view.topAnchor , constant: 50),
+            display.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 20),
             display.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             display.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             display.bottomAnchor.constraint(equalTo: functionStack.topAnchor, constant: -10),
@@ -63,6 +64,16 @@ class MainScreenVC: UIViewController {
             keypadStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             keypadStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20)
         ])
+    }
+    
+    
+    @objc func navbarFunctionsTapped() {
+        
+    }
+    
+    
+    @objc func navbarMoreInfoTapped() {
+        
     }
 }
 
@@ -75,13 +86,15 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         // called when the user gestures on the main display
         
         model.backspace()
-        display.updateDisplay()
+        display.updateMainDisplay()
     }
+    
     
     func functionKeyTapped(button: FuncButton) {
         
         // called when any function key is tapped
     }
+    
     
     func keyboardTapped(button: CalcButton) {
 
@@ -89,9 +102,13 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         
         guard let buttonText = button.titleLabel?.text else { return }
         model.keypadTapped(key: buttonText)
-        display.updateDisplay()
-        calcKeypad.updateHighlighted(button: button)
+        display.updateMainDisplay()
+        calcKeypad.updateButtonTitles()
     }
-        
-   
+    
+    
+    func colonKeyLongPressed() {
+        model.toggleTimeDisplay()
+        display.updateMainDisplay()
+    }
 }

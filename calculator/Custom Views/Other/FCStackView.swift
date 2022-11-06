@@ -13,10 +13,12 @@ class FCStackView: UIStackView {
             super.init(frame: frame)
         }
         
+    
         required init(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
-        
+    
+    
         convenience init(stackAxis: NSLayoutConstraint.Axis, alignment: UIStackView.Alignment, distribution: UIStackView.Distribution, padding: CGFloat) {
             self.init(frame: .zero)
             self.axis           = stackAxis
@@ -25,8 +27,9 @@ class FCStackView: UIStackView {
             self.spacing        = padding
             configure()
         }
-                   
-        func configure() {
+    
+    
+        private func configure() {
             translatesAutoresizingMaskIntoConstraints = false
         }
 }

@@ -16,9 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        let calculatorNC = UINavigationController(rootViewController: MainScreenVC())
+        
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = MainScreenVC()
+        window?.rootViewController = calculatorNC
         window?.makeKeyAndVisible()
     }
 

@@ -21,10 +21,11 @@ class FuncKeypad {
     }
     
        
-    func configure() {
+    private func configure() {
+        
         
         // sets the button height
-        let buttonSize: CGFloat = 40
+        let buttonSize: CGFloat = 45
     
         var buttonCount = 100
        
@@ -45,14 +46,10 @@ class FuncKeypad {
             // adds the row stack to the keypad stack
             functionStack.addArrangedSubview(rowStack)
         }
-        
     }
     
-    @objc func functionButtonTapped(_ sender: FuncButton) {
+    @objc private func functionButtonTapped(_ sender: FuncButton) {
         sender.flash()
         functionKeyDelegate.functionKeyTapped(button: sender)
     }
-    
-
-
 }
