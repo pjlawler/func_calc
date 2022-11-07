@@ -13,14 +13,24 @@ class MainScreenVC: UIViewController {
     let calcKeypad = CalcKeypad()
     let model = CalculatorModel.shared
     
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        let testData = DefaultData(baseCurrency: "USD", funcButton_1: "\("THB")\(Symbols.convertTo)\("USD")", funcButton_2: "\("USD")\(Symbols.convertTo)\("THB")")
+//        model.userDefaults = testData
+//        model.saveTestData()
+        
         configureViewController()
         configureNavbar()
         configureComponents()
+        model.retrieveUserDefaults()
         model.updateExchangeRates()
+        funcKeypad.updateTitleLabels()
     }
+    
     
     func configureViewController() {
         view.backgroundColor = .systemBackground
@@ -92,7 +102,19 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
     
     func functionKeyTapped(button: FuncButton) {
         
+        let rateText: String!
+        
         // called when any function key is tapped
+        if let rate = model.exchangeRates!.rates["THB"] {
+            rateText = "\(String(describing: rate!))"
+        }
+        else {
+            rateText = "THB Not Found"
+        }
+        
+        model.displayFunctionResult(mainText: rateText, auxText: "Current Thai Bhat")
+        model.mode = .displaying_error
+        display.updateMainDisplay()
     }
     
     

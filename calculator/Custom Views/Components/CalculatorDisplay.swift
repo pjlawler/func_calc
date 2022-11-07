@@ -98,9 +98,6 @@ class CalculatorDisplay: UIView {
                 
         var textToDisplay = model.displayRegister != nil ? model.displayRegister : "0"
         
-        let timeResult = model.displayResultAsTime != nil ? model.displayResultAsTime! : false
-        
-        
         // determines how to format the displayed data depending on the mode and what's in the register.
         
         if model.displayRegister != nil && model.mode != .displaying_error {
@@ -112,7 +109,7 @@ class CalculatorDisplay: UIView {
             let showDecimal = model.displayRegister.contains(".") && !useScientific
             var significantDigits = 1
             var trailingZeros = ""
-            let displayAsTime = model.displayRegister.contains(":") || timeResult ? true : false
+            let displayAsTime = model.displayRegister.contains(":") ? true : false
             
             if !useScientific {
 

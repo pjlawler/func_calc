@@ -13,6 +13,7 @@ protocol FCFucntionKeysDelegate {
 
 class FuncKeypad {
 
+    let model = CalculatorModel.shared
     let functionStack = FCStackView(stackAxis: .vertical, alignment: .fill, distribution: .fillEqually, padding: 2.0)
     var functionKeyDelegate: FCFucntionKeysDelegate!
     
@@ -44,7 +45,30 @@ class FuncKeypad {
             }
             
             // adds the row stack to the keypad stack
+            functionStack.translatesAutoresizingMaskIntoConstraints = false
             functionStack.addArrangedSubview(rowStack)
+        }
+    }
+    
+    func updateTitleLabels() {
+        
+        for tag in 100...107 {
+            
+            let button = functionStack.viewWithTag(tag) as! FuncButton
+            
+            switch tag {
+            case 100: button.updateTitle(titleText: model.userDefaults?.funcButton_1 ?? "")
+            case 101: button.updateTitle(titleText: model.userDefaults?.funcButton_2 ?? "")
+            case 102: button.updateTitle(titleText: model.userDefaults?.funcButton_3 ?? "")
+            case 103: button.updateTitle(titleText: model.userDefaults?.funcButton_4 ?? "")
+            case 104: button.updateTitle(titleText: model.userDefaults?.funcButton_5 ?? "")
+            case 105: button.updateTitle(titleText: model.userDefaults?.funcButton_6 ?? "")
+            case 106: button.updateTitle(titleText: model.userDefaults?.funcButton_7 ?? "")
+            case 107: button.updateTitle(titleText: model.userDefaults?.funcButton_8 ?? "")
+            default:
+                return
+            }
+            
         }
     }
     

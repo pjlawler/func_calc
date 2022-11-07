@@ -29,7 +29,7 @@ enum CalcModes {
 struct Fonts {
     static let keypadButton         = UIFont.systemFont(ofSize: 36, weight: .regular)
     static let keypadButton_hl      = UIFont.systemFont(ofSize: 40, weight: .bold)
-    static let mainDisplayText      = UIFont.systemFont(ofSize: 75, weight: .thin)
+    static let mainDisplayText      = UIFont.systemFont(ofSize: 95, weight: .thin)
     static let auxDisplayText       = UIFont.systemFont(ofSize: 24, weight: .regular)
     static let copyRightDisplayText = UIFont.systemFont(ofSize: 17, weight: .regular)
     static let currencyCodeText     = UIFont.systemFont(ofSize: 17, weight: .bold)

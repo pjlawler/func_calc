@@ -47,7 +47,7 @@ struct Convert {
             hours = 0
             minutes = 0
         case 1:
-            hours = time.last == ":" ? Double(Int(timeParts[0])!) : 0
+           hours = time.last == ":" ? Double(Int(timeParts[0])!) : 0
             minutes = time.last == ":" ? 0 : Double(Int(timeParts[0])!) / 60
         default:
             hours = Double(Int(timeParts[0])!)

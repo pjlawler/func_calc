@@ -22,12 +22,11 @@ struct NetworkManager {
     
     private init(){}
     
-    func getRates(completed: @escaping (Result<RateData, NetworkError>) -> Void) {
+    func getRates(baseCurrency: String, completed: @escaping (Result<RateData, NetworkError>) -> Void) {
         
-        // update to get the current base country from user defaults
-        let baseCurrency = "USD"
         
         let endpoint = baseURL + "\(baseCurrency)"
+        print("network: base \(baseCurrency)")
         
         // verifies it's a good URL
         guard let url = URL(string: endpoint) else {

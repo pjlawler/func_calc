@@ -14,16 +14,15 @@ class CalculatorModel {
     
     let network = NetworkManager.shared
     let storage = LocalStorageManager.shared
+    var userDefaults: DefaultData!
     var exchangeRates: RateData!
-    var displayResultAsTime: Bool?
     var auxDisplay: String?
     var displayRegister: String!
     var mathRegister: String!
     var operationRegister: String!
     var calculationList = ""
     var mode: CalcModes = .all_clear
-    
-    
+        
     func keypadTapped(key: String) {
     
         // handles when any of the calculator keypad keys are tapped
@@ -41,6 +40,10 @@ class CalculatorModel {
         }
     }
     
+    func saveTestData() {
+        storeUserDefaults()
+    }
+    
     
     private func clearAll() {
 
@@ -49,7 +52,6 @@ class CalculatorModel {
         displayRegister = nil
         operationRegister = nil
         mathRegister = nil
-        displayResultAsTime = nil
         calculationList = ""
         auxDisplay = nil
         mode = .all_clear
@@ -116,7 +118,6 @@ class CalculatorModel {
     private func operatorTapped(oper: String) {
         
         // peforms the functions when an operator is tapped on the keypad based on the mode of the calculator
-        displayResultAsTime = false
         
         switch mode {
         
@@ -175,9 +176,11 @@ class CalculatorModel {
             
             // limits the number the user can type into the calculator
             guard abs(registerValue) < 100000000 else { return }
-                        
+            
+            guard !(displayRegister.last == "." && numberKey == ":") else { return }
+            
             // ensures only one decimal is entered in the display regester
-            if displayRegister.contains(".") && numberKey == "." { return }
+            if displayRegister.contains(".") && (numberKey == "." || numberKey == ":") { return }
             if displayRegister.contains(":") && (numberKey == "." || numberKey == ":") { return }
             
             // if the display is showing 0, then any number will replace the zero
@@ -212,50 +215,47 @@ class CalculatorModel {
         let rhs = doubleValueOf(displayRegister)
         let result: Double!
         
-        displayResultAsTime = mathRegister.contains(":") || displayRegister.contains(":")
-         
+        guard (rhs != 0 && operationRegister != "") else {
+            setDisplayRegisterWithErrorText("Divide by Zero!")
+            return
+        }
+        
         switch operationRegister {
         case "+": result = lhs + rhs
         case "-": result = lhs - rhs
         case "×": result = lhs * rhs
-        case "÷":
-            if(rhs == 0) {
-                setDisplayRegisterWithErrorText("Divide by Zero!")
-                return }
-            result = lhs / rhs
-        default:
-            return
-        }
-             
-        let math = formatAuxNumber(number: mathRegister)
-        let display = formatAuxNumber(number: displayRegister)
-        
-        if calculationList.count == 0 {
-            calculationList = "\(math) \(operationRegister ?? "?") \(display)"
-        }
-        else {
-            calculationList = calculationList + " \(operationRegister ?? "?") \(display)"
+        case "÷": result = lhs / rhs
+        default: return
         }
         
+        // sets up to format the registers for the aux display
+        let math = formatAuxNumber(register: mathRegister)
+        let display = formatAuxNumber(register: displayRegister)
+        if calculationList.count == 0 { calculationList = "\(math) \(operationRegister ?? "?") \(display)" }
+        else { calculationList = calculationList + " \(operationRegister ?? "?") \(display)" }
         auxDisplay = calculationList
         
-        setDisplayRegisterWithDecimal(result)
+        // sets the display register to display time if either of the numbers where formatted as time
+        let displayResultAsTime = mathRegister.contains(":") || displayRegister.contains(":")
+        if displayResultAsTime { setDisplayRegisterWithTime(Convert().doubleToTime(result)) }
+        else { setDisplayRegisterWithDecimal(result) }
+        
         mode = .operation_complete
     }
     
     
-    private func formatAuxNumber(number: String?) -> String {
+    private func formatAuxNumber(register: String?) -> String {
         
-        if (number != nil && ((number!.contains(":")) == true )) {
-            return number!
+        if (register != nil && ((register!.contains(":")) == true )) {
+            return Convert().doubleToTime(doubleValueOf(register))
         }
         else {
-            let register = doubleValueOf(number) as NSNumber
+            let number = doubleValueOf(register) as NSNumber
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
             formatter.minimumIntegerDigits = 1
             formatter.groupingSeparator = ","
-            return formatter.string(from: register) ?? "0"
+            return formatter.string(from: number) ?? "0"
         }
     }
     
@@ -286,6 +286,8 @@ class CalculatorModel {
         auxDisplay = "Error!"
         mode = .displaying_error
     }
+    
+ 
 }
 
 extension CalculatorModel {
@@ -343,8 +345,8 @@ extension CalculatorModel {
         retrieveRates()
         
         // if the rates need to be updated, it downloads them from through the network manager
-        if exchangeRates == nil || exchangeRates.isOverHourOld {
-            network.getRates() { [weak self] result in
+        if exchangeRates == nil || exchangeRates.isOverHourOld || userDefaults.baseCurrency != exchangeRates.base {
+            network.getRates(baseCurrency: userDefaults?.baseCurrency ?? "USD") { [weak self] result in
                 guard let self = self else {return }
                 switch result {
                 case .success(let success):
@@ -366,22 +368,52 @@ extension CalculatorModel {
     
     
     private func retrieveRates() {
+        
+        // retrieves the stored rates, if any, from local storage
+        
         storage.retrieveRateData { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):
                 self.exchangeRates = success
-                print("retrieved rates from local storage")
+                print("retrieved rates from local storage. base: \(success.base)")
 
             case .failure(let failure):
-                print("local storage manager error - \(failure)")
+                print("local storage exchange rates error - \(failure)")
             }
+        }
+    }
+    
+    func retrieveUserDefaults() {
+        
+        // retrieves the user data, if any, from local storage
+        storage.retrieveDefaultData { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            
+            case .success(let success):
+                self.userDefaults = success
+                print("retrieved user defaults from local storage")
+              
+            case .failure(let failure):
+                print("local storgage user defaults error - \(failure)")
+            }
+        }
+    }
+    
+    private func storeUserDefaults() {
+        if storage.saveDefaultData(userDefaults) {
+            print("user defaults saved")
         }
     }
 }
 
 extension CalculatorModel {
     
+    func displayFunctionResult(mainText: String, auxText: String) {
+        displayRegister = mainText
+        auxDisplay = auxText
+    }
     
     private func performConversion(with number: Double, from fromUnit: ConversionUnit, to toUnit: ConversionUnit) {
         

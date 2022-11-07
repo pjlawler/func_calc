@@ -23,13 +23,13 @@ class FuncButton: UIButton {
         super.init(frame: .zero)
        
         // sets background color
-        backgroundColor = .systemBrown.withAlphaComponent(0.75)
+        backgroundColor = .systemBrown.withAlphaComponent(0.50)
         
         // styles button
         setTitleColor(.label, for: .normal)
-        titleLabel?.font = UIFont.systemFont(ofSize: 10, weight: .medium)
+        titleLabel?.font = Fonts.functionButtonText
         layer.borderWidth = 1.0
-        layer.borderColor = UIColor.white.cgColor
+        layer.borderColor = UIColor.systemBrown.cgColor
         layer.cornerRadius = size / 6
         clipsToBounds = true
 
@@ -38,6 +38,10 @@ class FuncButton: UIButton {
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: size)
         ])
+    }
+    
+    func updateTitle(titleText: String) {
+        setTitle(titleText, for: .normal)
     }
     
     func flash() {
