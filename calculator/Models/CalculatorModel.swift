@@ -17,8 +17,8 @@ class CalculatorModel {
     var userDefaults: DefaultData!
     var exchangeRates: RateData!
     var auxDisplay: String?
-    var displayRegister: String!
-    var mathRegister: String!
+    var displayRegister = CalcRegister()
+    var mathRegister = CalcRegister()
     var operationRegister: String!
     var calculationList = ""
     var mode: CalcModes = .all_clear
@@ -49,9 +49,9 @@ class CalculatorModel {
 
         // clears all of the calculator's registers
 
-        displayRegister = nil
+        displayRegister.data = nil
         operationRegister = nil
-        mathRegister = nil
+        mathRegister.data = nil
         calculationList = ""
         auxDisplay = nil
         mode = .all_clear
@@ -62,11 +62,11 @@ class CalculatorModel {
         switch mode {
         
         case .entering_first:
-            displayRegister = nil
+            displayRegister.data = nil
             mode = .all_clear
         
         case .entering_second:
-            displayRegister = nil
+            displayRegister.data = nil
             mode = .awaiting_second
         
         case .awaiting_second:
@@ -90,14 +90,13 @@ class CalculatorModel {
         switch mode {
 
         case .entering_first:
-            let result: Double = displayRegister == nil ? 0.0 : (displayRegister as NSString).doubleValue / 100
-            setDisplayRegisterWithDecimal(result)
+            setDisplayRegister(data: displayRegister.decimalValue / 100)
         
         case .entering_second:
-            let mathRegister: Double = mathRegister == nil ? 0.0 : (mathRegister as NSString).doubleValue
-            let displayRegister: Double = displayRegister == nil ? 0.0 : (displayRegister as NSString).doubleValue
+            let mathRegister = mathRegister.decimalValue
+            let displayRegister = displayRegister.decimalValue
             let result = displayRegister/100 * mathRegister
-            setDisplayRegisterWithDecimal(result)
+            setDisplayRegister(data: result)
 
         default:
             return
@@ -108,10 +107,11 @@ class CalculatorModel {
     private func toggleNegative() {
         
         // ensures that display is a non-zero number
-        if displayRegister == nil || displayRegister == "0" { return }
+        if displayRegister.data == nil || displayRegister.data == "0" { return }
         
-        let result: Double = (displayRegister as NSString).doubleValue * -1
-        setDisplayRegisterWithDecimal(result)
+        let result: Double = displayRegister.decimalValue * -1
+        setDisplayRegister(data: result)
+
     }
     
     
@@ -126,7 +126,7 @@ class CalculatorModel {
             // stores the math operator and gets setup to accept the second number
             
             operationRegister = oper
-            mathRegister = displayRegister != nil ? displayRegister : "0"
+            mathRegister.data = displayRegister.data
             mode = .awaiting_second
         
         case .entering_second:
@@ -135,10 +135,8 @@ class CalculatorModel {
         
             performMath()
             
-            guard mode != .displaying_error else { return }
-            
             // sets up for the next operation
-            mathRegister = displayRegister
+            mathRegister.data = displayRegister.data
             operationRegister = oper
             mode = .awaiting_second
     
@@ -165,39 +163,37 @@ class CalculatorModel {
             
             // first number being entered into the calculator
             
-            displayRegister = numberKey
+            displayRegister.data = numberKey
             mode = .entering_first
             
         case .entering_first, .entering_second:
             
             // user is entering numbers into the register
             
-            let registerValue: Double = displayRegister == nil ? 0.0 : (displayRegister as NSString).doubleValue
+            guard displayRegister.data != nil else { return }
             
             // limits the number the user can type into the calculator
-            guard abs(registerValue) < 100000000 else { return }
-            
-            guard !(displayRegister.last == "." && numberKey == ":") else { return }
-            
-            // ensures only one decimal is entered in the display regester
-            if displayRegister.contains(".") && (numberKey == "." || numberKey == ":") { return }
-            if displayRegister.contains(":") && (numberKey == "." || numberKey == ":") { return }
+            guard !displayRegister.isMax else { return }
+                        
+            // ensures only one decimal and/or colon is entered in the display regester
+            if displayRegister.containsDecimalOrColon && (numberKey == "." || numberKey == ":") { return }
             
             // if the display is showing 0, then any number will replace the zero
-            displayRegister = displayRegister == "0" ? numberKey : displayRegister + numberKey
+            displayRegister.data = displayRegister.data == "0" ? numberKey : displayRegister.data! + numberKey
             
         case .awaiting_second:
             
             // awaiting the next number for the calculation
-            displayRegister = numberKey
+            
+            displayRegister.data = numberKey
             mode = .entering_second
             
         case .operation_complete:
             
             // user starts entering a new number after they pressed the equals
             
-            mathRegister = displayRegister != nil ? displayRegister : "0"
-            displayRegister = numberKey
+            mathRegister.data = displayRegister.data
+            displayRegister.data = numberKey
             operationRegister = nil
             mode = .entering_first
        
@@ -211,8 +207,8 @@ class CalculatorModel {
         
         // performs the math operation on the math and display registers using the operator that is stored in the operation register
         
-        let lhs = doubleValueOf(mathRegister)
-        let rhs = doubleValueOf(displayRegister)
+        let lhs = mathRegister.decimalValue
+        let rhs = displayRegister.decimalValue
         let result: Double!
         
         guard (rhs != 0 && operationRegister != "") else {
@@ -229,60 +225,40 @@ class CalculatorModel {
         }
         
         // sets up to format the registers for the aux display
-        let math = formatAuxNumber(register: mathRegister)
-        let display = formatAuxNumber(register: displayRegister)
+        let math = mathRegister.displayFormatted
+        let display = displayRegister.displayFormatted
         if calculationList.count == 0 { calculationList = "\(math) \(operationRegister ?? "?") \(display)" }
         else { calculationList = calculationList + " \(operationRegister ?? "?") \(display)" }
         auxDisplay = calculationList
         
-        // sets the display register to display time if either of the numbers where formatted as time
-        let displayResultAsTime = mathRegister.contains(":") || displayRegister.contains(":")
-        if displayResultAsTime { setDisplayRegisterWithTime(Convert().doubleToTime(result)) }
-        else { setDisplayRegisterWithDecimal(result) }
+        // sets the display register to display time if either of the registers were formatted as time
+        let displayResultAsTime = mathRegister.isDisplayingTime || displayRegister.isDisplayingTime
+        setDisplayRegister(data: result, asTime: displayResultAsTime)
         
         mode = .operation_complete
     }
     
-    
-    private func formatAuxNumber(register: String?) -> String {
         
-        if (register != nil && ((register!.contains(":")) == true )) {
-            return Convert().doubleToTime(doubleValueOf(register))
+    private func setDisplayRegister(data decimal: Double, asTime: Bool = false) {
+        
+        if !asTime {
+            if decimal == trunc(decimal) && decimal < Double(Int.max) {  displayRegister.data = String(Int(decimal)) }
+            else { displayRegister.data = String(decimal) }
         }
         else {
-            let number = doubleValueOf(register) as NSNumber
-            let formatter = NumberFormatter()
-            formatter.numberStyle = .decimal
-            formatter.minimumIntegerDigits = 1
-            formatter.groupingSeparator = ","
-            return formatter.string(from: number) ?? "0"
+            displayRegister.data = Convert().doubleToTime(decimal)
         }
-    }
-    
-    
-    private func setDisplayRegisterWithDecimal(_ decimal:Double) {
         
-        if decimal == trunc(decimal) && decimal < Double(Int.max) {
-            displayRegister = String(Int(decimal))
-        } else {
-            displayRegister = String(decimal)
-        }
     }
-    
-    
-    private func setDisplayRegisterWithTime(_ time: String) {
-        displayRegister = time
-    }
-    
+        
     
     private func resetDisplayRegister() {
-        guard mathRegister != nil else { return }
-        displayRegister = mathRegister
+        displayRegister.data = mathRegister.data
     }
     
     
     private func setDisplayRegisterWithErrorText(_ errorText:String) {
-        displayRegister = errorText
+        displayRegister.data = errorText
         auxDisplay = "Error!"
         mode = .displaying_error
     }
@@ -299,43 +275,20 @@ extension CalculatorModel {
 
         // updates the display register when the display is swipped right
 
-        guard displayRegister != nil else { return }
+        guard displayRegister.data != nil else { return }
         
-        if displayRegister.count == 1 { displayRegister = "0" }
-        else { displayRegister.remove(at: displayRegister.index(before: displayRegister.endIndex)) }
+        if displayRegister.data!.count == 1 { displayRegister.data = "0" }
+        else { displayRegister.data!.remove(at: displayRegister.data!.index(before: displayRegister.data!.endIndex)) }
     }
     
     
     func toggleTimeDisplay() {
         
         // swaps display between decimal and time
-        
-        let registerValue = doubleValueOf(displayRegister)
-        
-        if displayRegister == nil || !displayRegister.contains(":") {
-            setDisplayRegisterWithTime(Convert().doubleToTime(registerValue))
-        }
-        else {
-            setDisplayRegisterWithDecimal(registerValue)
-        }
+        setDisplayRegister(data: displayRegister.decimalValue, asTime: !displayRegister.isDisplayingTime)
         mode = .operation_complete
     }
-    
-    
-    func doubleValueOf(_ register: String?) -> Double {
-        
-        // returns the value of what's stored in the passed in register
-        
-        // if register is nil, then returs 0.0
-        guard let _ = register else { return 0.0 }
-        
-        // if register contains time, then converts time to double
-        if register!.contains(":") { return Convert().timeToDecimal(register!) }
-        
-        // converts register string to double
-        return (register! as NSString).doubleValue
-    }
-    
+      
     
     func updateExchangeRates() {
         
@@ -401,7 +354,7 @@ extension CalculatorModel {
         }
     }
     
-    private func storeUserDefaults() {
+    func storeUserDefaults() {
         if storage.saveDefaultData(userDefaults) {
             print("user defaults saved")
         }
@@ -411,16 +364,13 @@ extension CalculatorModel {
 extension CalculatorModel {
     
     func displayFunctionResult(mainText: String, auxText: String) {
-        displayRegister = mainText
+        displayRegister.data = mainText
         auxDisplay = auxText
     }
     
     private func performConversion(with number: Double, from fromUnit: ConversionUnit, to toUnit: ConversionUnit) {
         
-        // look up units
-        //        ConversionUnit(title: "U.S. Cup", multiplier: 0.2365882365, category: Categories.volume, symbol: "cup", favorite: nil, answerPrefix: nil, answerSuffix: " cp"),
-        //        ConversionUnit(title: "U.S. Gallon", multiplier: 3.785411784, category: Categories.volume, symbol: "gal", favorite: nil, answerPrefix: nil, answerSuffix: " gal"),
-
+     
     }
     
     

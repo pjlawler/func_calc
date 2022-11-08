@@ -19,7 +19,7 @@ class MainScreenVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let testData = DefaultData(baseCurrency: "USD", funcButton_1: "\("THB")\(Symbols.convertTo)\("USD")", funcButton_2: "\("USD")\(Symbols.convertTo)\("THB")")
+//        let testData = DefaultData(baseCurrency: "THB", funcButton_1: "\("THB")\(Symbols.convertTo)\("USD")", funcButton_2: "\("USD")\(Symbols.convertTo)\("THB")")
 //        model.userDefaults = testData
 //        model.saveTestData()
         
@@ -83,7 +83,8 @@ class MainScreenVC: UIViewController {
     
     
     @objc func navbarMoreInfoTapped() {
-        
+        let moreInfoVC = MoreInfoVC()
+        navigationController?.pushViewController(moreInfoVC, animated: true)
     }
 }
 
@@ -96,7 +97,7 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         // called when the user gestures on the main display
         
         model.backspace()
-        display.updateMainDisplay()
+        display.updateDisplay()
     }
     
     
@@ -114,7 +115,7 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         
         model.displayFunctionResult(mainText: rateText, auxText: "Current Thai Bhat")
         model.mode = .displaying_error
-        display.updateMainDisplay()
+        display.updateDisplay()
     }
     
     
@@ -124,13 +125,13 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         
         guard let buttonText = button.titleLabel?.text else { return }
         model.keypadTapped(key: buttonText)
-        display.updateMainDisplay()
+        display.updateDisplay()
         calcKeypad.updateButtonTitles()
     }
     
     
     func colonKeyLongPressed() {
         model.toggleTimeDisplay()
-        display.updateMainDisplay()
+        display.updateDisplay()
     }
 }

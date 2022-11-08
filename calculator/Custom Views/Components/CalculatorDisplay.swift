@@ -83,75 +83,24 @@ class CalculatorDisplay: UIView {
     @objc private func displaySwipedRight(_ sender: Any){
         displayDelegate.displaySwippedRight()
     }
+       
     
-    
-    private func updateAuxDisplay(_ text: String?) {
-        aux.text = text
-    }
-    
-    
-    func updateMainDisplay() {
+    func updateDisplay() {
         
-        updateAuxDisplay(model.auxDisplay)
+        aux.text = model.auxDisplay
+            
+        var textToDisplay: String?
         
-        // reformats the display register data to show the user on the main display (i.e. decimal with thousands seperators)
-                
-        var textToDisplay = model.displayRegister != nil ? model.displayRegister : "0"
+        switch model.mode {
         
-        // determines how to format the displayed data depending on the mode and what's in the register.
+        case .displaying_error:
+            textToDisplay = model.displayRegister.data
         
-        if model.displayRegister != nil && model.mode != .displaying_error {
-            
-            // operations if the register contains a decimal number
-            
-            let register = model.doubleValueOf(model.displayRegister)
-            let useScientific = abs(register) > 9999999999.99
-            let showDecimal = model.displayRegister.contains(".") && !useScientific
-            var significantDigits = 1
-            var trailingZeros = ""
-            let displayAsTime = model.displayRegister.contains(":") ? true : false
-            
-            if !useScientific {
-
-                // determines max fraction digits and number of trailing zeros (i.e. 1.00000) in the display register
-                
-                // calculates how many digits to the left of the decimal, if any. If none it uses 1 (for a zero placeholder)
-                significantDigits = model.displayRegister.count > 1 && model.displayRegister.first != "." ? model.displayRegister.split(separator: ".")[0].count : 1
-                
-                // checks to see how many trailing 0's are after the end of the decimal, if any
-                if model.displayRegister.contains(".") && model.displayRegister.last != "." {
-                    
-                    var count = 0
-                    
-                    // if nothing on the left side of the split uses zero for the fraction index
-                    let fractionPart = model.displayRegister.first == "." ? 0 : 1
-                    
-                    // looks at each char after the . to see how many trailing zeros there are
-                    for char in model.displayRegister.split(separator: ".")[fractionPart] {
-                        if char == "0" { count += 1} else { count = 0 }
-                    }
-                    
-                    // creates a string of trailing zeros to add to the display
-                    trailingZeros = String(repeating: "0", count: count)
-                }
-            }
-            
-            if displayAsTime {
-                textToDisplay = Convert().doubleToTime(register)
-            }
-            else {
-                let formatter =  NumberFormatter()
-                formatter.numberStyle = useScientific ? .scientific : .decimal
-                formatter.exponentSymbol = "e"
-                formatter.groupingSeparator = ","
-                formatter.usesGroupingSeparator = true
-                formatter.alwaysShowsDecimalSeparator = showDecimal
-                formatter.maximumIntegerDigits = useScientific ? 3 : 10
-                formatter.maximumFractionDigits = useScientific ? 3 : 9 - significantDigits
-                textToDisplay = formatter.string(from: register as NSNumber)! + trailingZeros
-            }
+        default:
+            if model.displayRegister.isDisplayingTime { textToDisplay = model.displayRegister.formattedTime }
+            else { textToDisplay = model.displayRegister.formattedDecimal }
         }
-        // sets the label text
+        
         main.text = textToDisplay
     }
     

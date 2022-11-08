@@ -16,6 +16,17 @@
 		6873B1BE2915898A0021A528 /* LocalStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6873B1BD2915898A0021A528 /* LocalStorageManager.swift */; };
 		6873B1C02915DF570021A528 /* ConversionUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6873B1BF2915DF570021A528 /* ConversionUnit.swift */; };
 		6873B1C229187BC80021A528 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6873B1C129187BC80021A528 /* UserDefaults.swift */; };
+		688FA025291960C100538084 /* CalcRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA024291960C100538084 /* CalcRegister.swift */; };
+		688FA0272919CCE400538084 /* MoreInfoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA0262919CCE400538084 /* MoreInfoVC.swift */; };
+		688FA0292919CD7900538084 /* MoreInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA0282919CD7900538084 /* MoreInfoCell.swift */; };
+		688FA02C2919D15700538084 /* CopyrightLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA02B2919D15700538084 /* CopyrightLabel.swift */; };
+		688FA02E2919D78F00538084 /* BaseCurrenciesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA02D2919D78F00538084 /* BaseCurrenciesVC.swift */; };
+		688FA0302919D83600538084 /* BaseCurrenciesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA02F2919D83600538084 /* BaseCurrenciesCell.swift */; };
+		688FA0332919EFDB00538084 /* CurrentRatesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA0322919EFDB00538084 /* CurrentRatesVC.swift */; };
+		688FA0352919F0B700538084 /* FCSegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA0342919F0B700538084 /* FCSegmentControl.swift */; };
+		688FA0372919F20F00538084 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA0362919F20F00538084 /* Currency.swift */; };
+		688FA0392919F7D800538084 /* RatesTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA0382919F7D800538084 /* RatesTableCell.swift */; };
+		688FA03B2919F83C00538084 /* RatesCellLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 688FA03A2919F83C00538084 /* RatesCellLabel.swift */; };
 		6894C8DC2911C49D00ABF34B /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6894C8DB2911C49D00ABF34B /* Utilities.swift */; };
 		6894C8DE2911CCA500ABF34B /* FCStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6894C8DD2911CCA500ABF34B /* FCStackView.swift */; };
 		6894C8E02911E47100ABF34B /* FuncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6894C8DF2911E47100ABF34B /* FuncButton.swift */; };
@@ -42,6 +53,17 @@
 		6873B1BD2915898A0021A528 /* LocalStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageManager.swift; sourceTree = "<group>"; };
 		6873B1BF2915DF570021A528 /* ConversionUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionUnit.swift; sourceTree = "<group>"; };
 		6873B1C129187BC80021A528 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		688FA024291960C100538084 /* CalcRegister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalcRegister.swift; sourceTree = "<group>"; };
+		688FA0262919CCE400538084 /* MoreInfoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoVC.swift; sourceTree = "<group>"; };
+		688FA0282919CD7900538084 /* MoreInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoCell.swift; sourceTree = "<group>"; };
+		688FA02B2919D15700538084 /* CopyrightLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyrightLabel.swift; sourceTree = "<group>"; };
+		688FA02D2919D78F00538084 /* BaseCurrenciesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCurrenciesVC.swift; sourceTree = "<group>"; };
+		688FA02F2919D83600538084 /* BaseCurrenciesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCurrenciesCell.swift; sourceTree = "<group>"; };
+		688FA0322919EFDB00538084 /* CurrentRatesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentRatesVC.swift; sourceTree = "<group>"; };
+		688FA0342919F0B700538084 /* FCSegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCSegmentControl.swift; sourceTree = "<group>"; };
+		688FA0362919F20F00538084 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		688FA0382919F7D800538084 /* RatesTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesTableCell.swift; sourceTree = "<group>"; };
+		688FA03A2919F83C00538084 /* RatesCellLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesCellLabel.swift; sourceTree = "<group>"; };
 		6894C8DB2911C49D00ABF34B /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		6894C8DD2911CCA500ABF34B /* FCStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCStackView.swift; sourceTree = "<group>"; };
 		6894C8DF2911E47100ABF34B /* FuncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuncButton.swift; sourceTree = "<group>"; };
@@ -98,9 +120,28 @@
 			path = calculator;
 			sourceTree = "<group>";
 		};
+		688FA02A2919D11600538084 /* TableCells */ = {
+			isa = PBXGroup;
+			children = (
+				688FA0282919CD7900538084 /* MoreInfoCell.swift */,
+				688FA02F2919D83600538084 /* BaseCurrenciesCell.swift */,
+				688FA0382919F7D800538084 /* RatesTableCell.swift */,
+			);
+			path = TableCells;
+			sourceTree = "<group>";
+		};
+		688FA0312919EFAA00538084 /* ModalVCs */ = {
+			isa = PBXGroup;
+			children = (
+				688FA0322919EFDB00538084 /* CurrentRatesVC.swift */,
+			);
+			path = ModalVCs;
+			sourceTree = "<group>";
+		};
 		6894C8E12911EBAE00ABF34B /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				688FA02A2919D11600538084 /* TableCells */,
 				68A221EE29140E570068F250 /* Components */,
 				6894C8ED29120A4900ABF34B /* Buttons */,
 				68A221EF29140E820068F250 /* Other */,
@@ -131,7 +172,10 @@
 		6894C8E42911EC7500ABF34B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				688FA0312919EFAA00538084 /* ModalVCs */,
 				68709FD9291092AA00C1055C /* MainScreenVC.swift */,
+				688FA0262919CCE400538084 /* MoreInfoVC.swift */,
+				688FA02D2919D78F00538084 /* BaseCurrenciesVC.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -161,6 +205,8 @@
 				68A221EC2913506D0068F250 /* RateData.swift */,
 				6873B1BF2915DF570021A528 /* ConversionUnit.swift */,
 				6873B1C129187BC80021A528 /* UserDefaults.swift */,
+				688FA024291960C100538084 /* CalcRegister.swift */,
+				688FA0362919F20F00538084 /* Currency.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -188,6 +234,9 @@
 			isa = PBXGroup;
 			children = (
 				6894C8DD2911CCA500ABF34B /* FCStackView.swift */,
+				688FA02B2919D15700538084 /* CopyrightLabel.swift */,
+				688FA0342919F0B700538084 /* FCSegmentControl.swift */,
+				688FA03A2919F83C00538084 /* RatesCellLabel.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -264,21 +313,32 @@
 			files = (
 				6894C8DC2911C49D00ABF34B /* Utilities.swift in Sources */,
 				68A221ED2913506D0068F250 /* RateData.swift in Sources */,
+				688FA0272919CCE400538084 /* MoreInfoVC.swift in Sources */,
 				6894C8DE2911CCA500ABF34B /* FCStackView.swift in Sources */,
 				6873B1C02915DF570021A528 /* ConversionUnit.swift in Sources */,
 				6894C8EA2912020800ABF34B /* FuncKeypad.swift in Sources */,
 				6894C8E02911E47100ABF34B /* FuncButton.swift in Sources */,
+				688FA02C2919D15700538084 /* CopyrightLabel.swift in Sources */,
 				6894C8EC2912050100ABF34B /* CalculatorDisplay.swift in Sources */,
 				68709FDA291092AA00C1055C /* MainScreenVC.swift in Sources */,
 				68A221E4291332D10068F250 /* OpenExchangeRates.swift in Sources */,
+				688FA0302919D83600538084 /* BaseCurrenciesCell.swift in Sources */,
+				688FA0372919F20F00538084 /* Currency.swift in Sources */,
+				688FA0392919F7D800538084 /* RatesTableCell.swift in Sources */,
 				6873B1BE2915898A0021A528 /* LocalStorageManager.swift in Sources */,
 				6894C8E82911F51400ABF34B /* CalcKeypad.swift in Sources */,
 				6894C8F12912B03C00ABF34B /* CalculatorModel.swift in Sources */,
 				68709FD6291092AA00C1055C /* AppDelegate.swift in Sources */,
+				688FA0352919F0B700538084 /* FCSegmentControl.swift in Sources */,
+				688FA0332919EFDB00538084 /* CurrentRatesVC.swift in Sources */,
 				6873B1C229187BC80021A528 /* UserDefaults.swift in Sources */,
 				68709FEA2910957000C1055C /* CalcButton.swift in Sources */,
 				68A221E6291334F30068F250 /* CurrencyCollection.swift in Sources */,
+				688FA0292919CD7900538084 /* MoreInfoCell.swift in Sources */,
 				68A221E9291335AC0068F250 /* NetworkManager.swift in Sources */,
+				688FA025291960C100538084 /* CalcRegister.swift in Sources */,
+				688FA03B2919F83C00538084 /* RatesCellLabel.swift in Sources */,
+				688FA02E2919D78F00538084 /* BaseCurrenciesVC.swift in Sources */,
 				68709FD8291092AA00C1055C /* SceneDelegate.swift in Sources */,
 				6894C8F32912CAA600ABF34B /* Constants.swift in Sources */,
 			);
