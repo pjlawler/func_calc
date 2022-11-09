@@ -17,4 +17,6 @@ struct DefaultData: Codable {
    var funcButton_6: String?
    var funcButton_7: String?
    var funcButton_8: String?
+   var favorites: [String]?
+   var showingFavorites: Bool?
 }

@@ -35,9 +35,11 @@ class FCSegmentControl: UISegmentedControl {
         insertSegment(withTitle: secondTitle, at: 1, animated: false)
         setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.label], for: .selected)
         setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel], for: .normal)
+        
         translatesAutoresizingMaskIntoConstraints       = false
-        selectedSegmentTintColor                        = UIColor.systemIndigo
-        backgroundColor                                 = UIColor.systemFill
+        
+        selectedSegmentTintColor                        = .systemIndigo.withAlphaComponent(0.75)
+        backgroundColor                                 = .systemBackground
         selectedSegmentIndex                            = startOn
     }
 

@@ -14,12 +14,13 @@ class RatesTableCell: UITableViewCell {
     let countryNameLabel    = RatesCellLabel(textColor: .systemIndigo, textAlignment: .left)
     let countryCodeLabel    = RatesCellLabel(textColor: .systemIndigo, textAlignment: .center)
     let currentRateLabel    = RatesCellLabel(textColor: .systemGreen, textAlignment: .center)
-    let button              = UIButton(frame: .zero)
+    let button              = FavoriteButton(frame: .zero)
     let formatter           = NumberFormatter()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configure()
+
     }
     
             
@@ -31,34 +32,40 @@ class RatesTableCell: UITableViewCell {
     func set(rateData: Currency) {
         self.rateData                   = rateData
         let rate                        = rateData.rateToBase
+        
         formatter.currencyCode          = rateData.code
+        
         countryCodeLabel.text           = rateData.code
         countryNameLabel.text           = rateData.name
+        
         button.isSelected               = rateData.favorited
+        
         formatter.numberStyle           = .decimal
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2
+        
         let exchangeRate                = formatter.string(from: NSNumber(value: rate!))
         currentRateLabel.text           = exchangeRate
+        
         button.translatesAutoresizingMaskIntoConstraints = false
+       
     }
     
-    
     func configure() {
-        backgroundColor                 = .systemBackground
+        backgroundColor                 = .tertiarySystemBackground
+        
         let padding: CGFloat            = 10
-        button.setImage(ImageSymbols.favoriteStar, for: .normal)
-        button.setImage(ImageSymbols.favoriteStarFill, for: .selected)
-        button.tintColor = .systemIndigo
         countryCodeLabel.numberOfLines = 1
         currentRateLabel.numberOfLines = 1
-        
-        addSubview(countryNameLabel)
-        addSubview(countryCodeLabel)
-        addSubview(currentRateLabel)
-        addSubview(button)
+
+        contentView.addSubview(countryNameLabel)
+        contentView.addSubview(countryCodeLabel)
+        contentView.addSubview(currentRateLabel)
+        contentView.addSubview(button)
         
         NSLayoutConstraint.activate([
+            contentView.heightAnchor.constraint(equalToConstant: 55),
+            
             countryCodeLabel.topAnchor.constraint(equalTo: topAnchor, constant: padding),
             countryCodeLabel.widthAnchor.constraint(equalToConstant: 70),
             countryCodeLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
@@ -66,15 +73,17 @@ class RatesTableCell: UITableViewCell {
             countryNameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             countryNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
             countryNameLabel.trailingAnchor.constraint(equalTo: countryCodeLabel.leadingAnchor, constant: -padding),
+            countryNameLabel.heightAnchor.constraint(equalToConstant: 75),
 
             currentRateLabel.topAnchor.constraint(equalTo: countryCodeLabel.bottomAnchor),
             currentRateLabel.widthAnchor.constraint(equalToConstant: 70),
             currentRateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
             currentRateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding),
-            
-            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
-            button.centerYAnchor.constraint(equalTo: centerYAnchor)
-            
+           
+            button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            button.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
+            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding),
+            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding)
         ])
     }
 }

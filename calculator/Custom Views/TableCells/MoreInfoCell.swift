@@ -27,7 +27,7 @@ class MoreInfoCell: UITableViewCell {
     
     func configure() {
         let padding: CGFloat = 10
-        
+        backgroundColor = .tertiarySystemBackground
         addSubview(itemLabel)
         addSubview(detailLabel)
 

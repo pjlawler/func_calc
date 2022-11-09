@@ -10,6 +10,7 @@ import UIKit
 class CurrentRatesVC: UIViewController {
     
     let table                                   = UITableView()
+    let favoriteButton                          = FavoriteButton(frame: .zero)
     let segment                                 = FCSegmentControl(firstTitle: "Currency Name", secondTitle: "Currency Code", startOn: 0)
     let searchBar                               = UISearchBar()
     var isSearching                             = false
@@ -17,6 +18,7 @@ class CurrentRatesVC: UIViewController {
     var exchangeRates: [Currency]               = []
     var searchingRates: [Currency]              = []
     var model = CalculatorModel.shared
+    var showingFavorites = false
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -41,51 +43,56 @@ class CurrentRatesVC: UIViewController {
     func getLatestExchangeRates() {
         exchangeRates.removeAll()
         table.isHidden = true
+        showingFavorites = model.userDefaults.showingFavorites ?? false
+        favoriteButton.isSelected = showingFavorites
         
         for country in CountryData.currencyName {
             var currency = Currency()
+            let isFavorite = model.userDefaults.favorites?.contains(country.key) ?? false
+            
             currency.rateToBase = model.exchangeRates.rates[country.key]! ?? 0.0
             currency.base = model.exchangeRates.base
             currency.code = country.key
-            currency.favorited = false
+            currency.favorited = isFavorite
             currency.name = country.value
-            exchangeRates.append(currency)
+            
+            if !showingFavorites || (showingFavorites && isFavorite) {
+                exchangeRates.append(currency)
+            }
+            
         }
         reloadTable()
     }
     
-//    func toggleFavorites(sender: UIButton) {
-//        Constants.showFavoriteRates = !Constants.showFavoriteRates
-//        sender.isSelected           = Constants.showFavoriteRates
-//        if FCDefaultsManager.currencyCategoryFavorited() != nil {
-//            // TODO: Error Handler
-//        }
-//        getLatestExchangeRates()
-//    }
-    
-    
-//    func toggleRateFavorite(sender: UIButton) {
-//        let isFav = !sender.isSelected
-//        let code  = isSearching ? searchingRates[sender.tag].code : exchangeRates[sender.tag].code
-//        FCCoreDataManager.shared.favoriteCurrency(currency: code, favorite: isFav) { [weak self](error) in
-//            guard let self = self else { return }
-//            switch error {
-//            case nil:
-//                self.getLatestExchangeRates()
-//            default:
-//                break
-//            }
-//        }
-//    }
     
     
     //MARK: - Users' Inputs
     @objc func doneButtonTapped() { dismiss(animated: true) }
     @objc func segmentChanged() { reloadTable() }
-    @objc func mainFavoriteButtonTapped(sender: UIButton) {
+    @objc func mainFavoriteButtonTapped(sender: FavoriteButton) {
+        print("toggle rates tapped")
+        model.userDefaults.showingFavorites = !showingFavorites
+        model.storeUserDefaults()
+        getLatestExchangeRates()
 //        toggleFavorites(sender: sender)
     }
-    @objc func rateFavoriteButtonTapped(sender: UIButton) {
+    @objc func rateFavoriteButtonTapped(sender: FavoriteButton) {
+        print("favorite rate tapped")
+        print("\(sender.tag):\(sender.isSelected)")
+                
+        if sender.isSelected {
+            guard model.userDefaults.favorites != nil else { return }
+            model.userDefaults.favorites!.removeAll(where: { $0 == exchangeRates[sender.tag].code })
+        }
+        else {
+            if model.userDefaults.favorites == nil { model.userDefaults.favorites = [] }
+            model.userDefaults.favorites?.append(exchangeRates[sender.tag].code)
+        }
+        sender.toggle()
+        
+        model.storeUserDefaults()
+        getLatestExchangeRates()
+        
 //        toggleRateFavorite(sender: sender)
     }
 }
@@ -116,11 +123,15 @@ extension CurrentRatesVC: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = table.dequeueReusableCell(withIdentifier: "cellID") as! RatesTableCell
+        
+        let data = isSearching ? searchingRates[indexPath.row] : exchangeRates[indexPath.row]
+        
+        let cell = table.dequeueReusableCell(withIdentifier: "ratesTableCell") as! RatesTableCell
+        cell.selectionStyle = .none
+        cell.set(rateData: data)
         cell.button.tag = indexPath.row
         cell.button.addTarget(self, action: #selector(rateFavoriteButtonTapped(sender:)), for: .touchUpInside)
-        let data = isSearching ? searchingRates[indexPath.row] : exchangeRates[indexPath.row]
-        cell.set(rateData: data)
+        
         return cell
     }
 }
@@ -132,17 +143,15 @@ extension CurrentRatesVC {
         let toCurrency                      = "to \(model.exchangeRates.base)"
         title                               = "Currency Rates \(toCurrency)"
         view.backgroundColor                = .systemBackground
-        let doneButton                      = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-        
-        let favoriteButton                  = UIButton(frame: .zero)
-        favoriteButton.setImage(ImageSymbols.favoriteStar, for: .normal)
-        favoriteButton.setImage(ImageSymbols.favoriteStarFill, for: .selected)
+                
         favoriteButton.addTarget(self, action: #selector(mainFavoriteButtonTapped(sender:)), for: .touchUpInside)
-        favoriteButton.isSelected = Constants.showFavoriteRates
-        let starButton                      = UIBarButtonItem(customView: favoriteButton)
+        
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        let showFavorites = UIBarButtonItem(customView: favoriteButton)
         
         navigationItem.leftBarButtonItem    = doneButton
-        navigationItem.rightBarButtonItem   = starButton
+        navigationItem.rightBarButtonItem   = showFavorites
+        
         
         view.addSubview(table)
         view.addSubview(segment)
@@ -168,10 +177,12 @@ extension CurrentRatesVC {
     
     func configureTableView() {
         let tableFooter         = UIView(frame: .zero)
+        table.delaysContentTouches = false
         table.delegate          = self
         table.dataSource        = self
         table.tableFooterView   = tableFooter
-        table.register(RatesTableCell.self, forCellReuseIdentifier: "cellID")
+        table.register(RatesTableCell.self, forCellReuseIdentifier: "ratesTableCell")
+        
         table.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -185,11 +196,13 @@ extension CurrentRatesVC {
     
     
     func configureSegmentedControl() {
-        let titleLable  = UILabel()
-        titleLable.text = "Sort rates by:"
-        titleLable.font = Fonts.modalVCInfoText
-        view.addSubview(titleLable)
-        titleLable.translatesAutoresizingMaskIntoConstraints = false
+        let titleLabel  = UILabel()
+        titleLabel.text = "Sort rates by:"
+        titleLabel.font = Fonts.modalVCInfoText
+        
+        view.addSubview(titleLabel)
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         segment.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
 
@@ -197,8 +210,8 @@ extension CurrentRatesVC {
             segment.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding),
             segment.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding),
             segment.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: padding + 30),
-            titleLable.bottomAnchor.constraint(equalTo: segment.topAnchor, constant: -padding),
-            titleLable.centerXAnchor.constraint(equalTo: segment.centerXAnchor)
+            titleLabel.bottomAnchor.constraint(equalTo: segment.topAnchor, constant: -padding),
+            titleLabel.centerXAnchor.constraint(equalTo: segment.centerXAnchor)
         ])
     }
 }

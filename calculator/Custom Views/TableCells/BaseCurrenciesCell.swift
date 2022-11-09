@@ -23,7 +23,7 @@ class BaseCurrenciesCell: UITableViewCell {
     
     func configure() {
         let padding: CGFloat = 10
-        
+        backgroundColor = .tertiarySystemBackground
         addSubview(itemLabel)
 
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
