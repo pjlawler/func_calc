@@ -34,9 +34,9 @@ class BaseCurrenciesCell: UITableViewCell {
         ])
     }
     
-    func set(line: String, currentSelection: Bool) {
-        itemLabel.text      = line
-        accessoryType       = currentSelection ? .checkmark : .none
+    func set(rowData: String, isCurrentSelection: Bool) {
+        itemLabel.text      = rowData
+        accessoryType       = isCurrentSelection ? .checkmark : .none
     }
 
 }

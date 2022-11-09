@@ -174,10 +174,10 @@
 		6894C8E42911EC7500ABF34B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				688FA0312919EFAA00538084 /* ModalVCs */,
 				68709FD9291092AA00C1055C /* MainScreenVC.swift */,
 				688FA0262919CCE400538084 /* MoreInfoVC.swift */,
 				688FA02D2919D78F00538084 /* BaseCurrenciesVC.swift */,
+				688FA0312919EFAA00538084 /* ModalVCs */,
 			);
 			path = Screens;
 			sourceTree = "<group>";

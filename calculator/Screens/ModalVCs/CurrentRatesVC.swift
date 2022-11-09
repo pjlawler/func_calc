@@ -15,14 +15,13 @@ class CurrentRatesVC: UIViewController {
     let searchBar                               = UISearchBar()
     var isSearching                             = false
     let padding: CGFloat                        = 10
-    var exchangeRates: [Currency]               = []
-    var searchingRates: [Currency]              = []
+    var rateDataAll: [Currency]               = []
+    var rateDataSearching: [Currency]              = []
     var model = CalculatorModel.shared
     var showingFavorites = false
     
     init() {
         super.init(nibName: nil, bundle: nil)
-        configureView()
     }
     
     required init?(coder: NSCoder) {
@@ -36,64 +35,85 @@ class CurrentRatesVC: UIViewController {
         configureTableView()
         configureSearchBar()
         configureSegmentedControl()
-        getLatestExchangeRates()
+        updateTableData()
     }
     
     
-    func getLatestExchangeRates() {
-        exchangeRates.removeAll()
-        table.isHidden = true
-        showingFavorites = model.userDefaults.showingFavorites ?? false
-        favoriteButton.isSelected = showingFavorites
+    func updateTableData() {
         
+        // retrieves user default if showing only favorites or not, not if nil
+        showingFavorites = model.userDefaults.showingFavorites ?? false
+
+        // sets the favorites navbar button if showing favorites
+        favoriteButton.isSelected = showingFavorites
+
+        // empties the exchangerates data array
+        rateDataAll.removeAll()
+        
+        // iterates through each of the available countries loaded in the country name constant
         for country in CountryData.currencyName {
+            
+            // creates a currency object to hold the data
             var currency = Currency()
+            
+            // sets true if the country code is found in the favorites user defaults array
             let isFavorite = model.userDefaults.favorites?.contains(country.key) ?? false
             
+            // populates the data for the object
             currency.rateToBase = model.exchangeRates.rates[country.key]! ?? 0.0
             currency.base = model.exchangeRates.base
             currency.code = country.key
             currency.favorited = isFavorite
             currency.name = country.value
             
+            // adds the data to the array depending on if showing favorites or not, and if the rate is favorited
             if !showingFavorites || (showingFavorites && isFavorite) {
-                exchangeRates.append(currency)
+                rateDataAll.append(currency)
             }
-            
         }
+        
         reloadTable()
     }
-    
-    
+        
     
     //MARK: - Users' Inputs
     @objc func doneButtonTapped() { dismiss(animated: true) }
     @objc func segmentChanged() { reloadTable() }
     @objc func mainFavoriteButtonTapped(sender: FavoriteButton) {
-        print("toggle rates tapped")
+        
+        // toggles if showing favorites in the table and stores the choice in user defaults
         model.userDefaults.showingFavorites = !showingFavorites
         model.storeUserDefaults()
-        getLatestExchangeRates()
-//        toggleFavorites(sender: sender)
+        
+        updateTableData()
+
     }
+    
     @objc func rateFavoriteButtonTapped(sender: FavoriteButton) {
-        print("favorite rate tapped")
-        print("\(sender.tag):\(sender.isSelected)")
-                
-        if sender.isSelected {
+
+        // updates the user defaults favorites array depending on the state
+        let isFavorited = sender.isSelected
+        
+        if isFavorited {
             guard model.userDefaults.favorites != nil else { return }
-            model.userDefaults.favorites!.removeAll(where: { $0 == exchangeRates[sender.tag].code })
+            
+            // removes the country code from the user defaults favorites array
+            model.userDefaults.favorites!.removeAll(where: { $0 == rateDataAll[sender.tag].code })
         }
         else {
+            // ensures the favorites array is not nil
             if model.userDefaults.favorites == nil { model.userDefaults.favorites = [] }
-            model.userDefaults.favorites?.append(exchangeRates[sender.tag].code)
+            
+            // adds the favorted country code to the user defaults favorites array
+            model.userDefaults.favorites?.append(rateDataAll[sender.tag].code)
         }
-        sender.toggle()
         
         model.storeUserDefaults()
-        getLatestExchangeRates()
         
-//        toggleRateFavorite(sender: sender)
+        // toggles the button's selected state and stores
+        sender.toggle()
+        
+        updateTableData()
     }
 }
 
@@ -101,13 +121,18 @@ extension CurrentRatesVC: UITableViewDelegate, UITableViewDataSource {
     
     func reloadTable() {
         
+        // sorts the table data depending on which segment is selected
         switch self.segment.selectedSegmentIndex {
+        
         case 0:
-            self.exchangeRates.sort(by: { $0.name < $1.name })
-            self.searchingRates.sort(by: { $0.name < $1.name })
+            // sorts the data by country name
+            self.rateDataAll.sort(by: { $0.name < $1.name })
+            self.rateDataSearching.sort(by: { $0.name < $1.name })
+        
         case 1:
-            self.exchangeRates.sort(by: { $0.code < $1.code })
-            self.searchingRates.sort(by: { $0.code < $1.code })
+            // sorts the data by currency code
+            self.rateDataAll.sort(by: { $0.code < $1.code })
+            self.rateDataSearching.sort(by: { $0.code < $1.code })
         default:
             break
         }
@@ -118,13 +143,15 @@ extension CurrentRatesVC: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return isSearching ? searchingRates.count : exchangeRates.count
+        
+        // returns the array length depending if searching or not
+        return isSearching ? rateDataSearching.count : rateDataAll.count
     }
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let data = isSearching ? searchingRates[indexPath.row] : exchangeRates[indexPath.row]
+        let data = isSearching ? rateDataSearching[indexPath.row] : rateDataAll[indexPath.row]
         
         let cell = table.dequeueReusableCell(withIdentifier: "ratesTableCell") as! RatesTableCell
         cell.selectionStyle = .none
@@ -177,6 +204,7 @@ extension CurrentRatesVC {
     
     func configureTableView() {
         let tableFooter         = UIView(frame: .zero)
+        table.isHidden = true
         table.delaysContentTouches = false
         table.delegate          = self
         table.dataSource        = self
@@ -224,7 +252,7 @@ extension CurrentRatesVC: UISearchBarDelegate, UISearchTextFieldDelegate {
         }
         else {
             let searchText = searchBar.text!.lowercased()
-            searchingRates = exchangeRates.filter({ $0.name.lowercased().contains(searchText) || $0.code.lowercased().contains(searchText) })
+            rateDataSearching = rateDataAll.filter({ $0.name.lowercased().contains(searchText) || $0.code.lowercased().contains(searchText) })
             isSearching = true
         }
         reloadTable()
