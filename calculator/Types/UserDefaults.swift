@@ -8,15 +8,16 @@
 import Foundation
 
 struct DefaultData: Codable {
-   var baseCurrency: String?
-   var funcButton_1: String?
-   var funcButton_2: String?
-   var funcButton_3: String?
-   var funcButton_4: String?
-   var funcButton_5: String?
-   var funcButton_6: String?
-   var funcButton_7: String?
-   var funcButton_8: String?
-   var favorites: [String]?
-   var showingFavorites: Bool?
+    var baseCurrency: String?
+    var funcButton_1: String?
+    var funcButton_2: String?
+    var funcButton_3: String?
+    var funcButton_4: String?
+    var funcButton_5: String?
+    var funcButton_6: String?
+    var funcButton_7: String?
+    var funcButton_8: String?
+    var favorites: [String]?
+    var showingFavorites: Bool?
+    var downloadErrorWarned: Date?
 }

@@ -11,9 +11,9 @@ class RatesTableCell: UITableViewCell {
     
     var rateData: Currency!
     
-    let countryNameLabel    = RatesCellLabel(textColor: .systemIndigo, textAlignment: .left)
-    let countryCodeLabel    = RatesCellLabel(textColor: .systemIndigo, textAlignment: .center)
-    let currentRateLabel    = RatesCellLabel(textColor: .systemGreen, textAlignment: .center)
+    let countryNameLabel    = RatesCellLabel(textColor: .label, textAlignment: .left)
+    let countryCodeLabel    = RatesCellLabel(textColor: .label, textAlignment: .center)
+    let currentRateLabel    = RatesCellLabel(textColor: .label, textAlignment: .center)
     let button              = FavoriteButton(frame: .zero)
     let formatter           = NumberFormatter()
 
@@ -52,7 +52,7 @@ class RatesTableCell: UITableViewCell {
     }
     
     func configure() {
-        backgroundColor                 = .tertiarySystemBackground
+        backgroundColor                 = .systemBackground
         
         let padding: CGFloat            = 10
         countryCodeLabel.numberOfLines = 1
@@ -64,7 +64,6 @@ class RatesTableCell: UITableViewCell {
         contentView.addSubview(button)
         
         NSLayoutConstraint.activate([
-            contentView.heightAnchor.constraint(equalToConstant: 55),
             
             countryCodeLabel.topAnchor.constraint(equalTo: topAnchor, constant: padding),
             countryCodeLabel.widthAnchor.constraint(equalToConstant: 70),
@@ -73,8 +72,7 @@ class RatesTableCell: UITableViewCell {
             countryNameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             countryNameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
             countryNameLabel.trailingAnchor.constraint(equalTo: countryCodeLabel.leadingAnchor, constant: -padding),
-            countryNameLabel.heightAnchor.constraint(equalToConstant: 75),
-
+        
             currentRateLabel.topAnchor.constraint(equalTo: countryCodeLabel.bottomAnchor),
             currentRateLabel.widthAnchor.constraint(equalToConstant: 70),
             currentRateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -40),
@@ -83,7 +81,8 @@ class RatesTableCell: UITableViewCell {
             button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             button.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
             button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding)
+            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
+            button.heightAnchor.constraint(greaterThanOrEqualToConstant: 40)
         ])
     }
 }

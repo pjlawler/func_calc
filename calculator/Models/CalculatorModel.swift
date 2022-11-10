@@ -5,7 +5,7 @@
 //  Created by Patrick Lawler on 11/2/22.
 //
 
-import Foundation
+import UIKit
 
 class CalculatorModel {
     
@@ -14,7 +14,7 @@ class CalculatorModel {
     
     let network = NetworkManager.shared
     let storage = LocalStorageManager.shared
-    var userDefaults: DefaultData!
+    var userDefaults = DefaultData()
     var exchangeRates: RateData!
     var auxDisplay: String?
     var displayRegister = CalcRegister()
@@ -294,12 +294,17 @@ extension CalculatorModel {
         
         // gets the rates, if any, that are saved in local storage and stores them in the local variable.
         // if there is local storage is empty or it's older than 1-hour old it will attempt to download the latest
-                
+    
         retrieveRates()
+            
+        if userDefaults.baseCurrency == nil {
+            userDefaults.baseCurrency = "USD"
+            storeUserDefaults()
+        }
         
         // if the rates need to be updated, it downloads them from through the network manager
         if exchangeRates == nil || exchangeRates.isOverHourOld || userDefaults.baseCurrency != exchangeRates.base {
-            network.getRates(baseCurrency: userDefaults?.baseCurrency ?? "USD") { [weak self] result in
+            network.getRates(baseCurrency: userDefaults.baseCurrency!) { [weak self] result in
                 guard let self = self else {return }
                 switch result {
                 case .success(let success):
@@ -318,6 +323,8 @@ extension CalculatorModel {
             }
         }
     }
+    
+    
     
     
     private func retrieveRates() {

@@ -12,6 +12,8 @@ class MoreInfoVC: UITableViewController {
     let tableData: [String] = ["Instructions", "Base Exchange Currency","Current Exchange Rates"]
     let tableFooter = UIView(frame: .zero)
     let copyrightLabel = CopyrightLabel()
+    let ratesStatusLabel = UILabel(frame: .zero)
+    
     let cellID = "cellID"
     let model = CalculatorModel.shared
     
@@ -40,14 +42,14 @@ class MoreInfoVC: UITableViewController {
     
     
     func pushBaseCurrenciesVC() {
-           let baseCurrenciesVC  = BaseCurrenciesVC()
+           let baseCurrenciesVC = BaseCurrenciesVC()
            navigationController?.pushViewController(baseCurrenciesVC, animated: true)
        }
     
     
     func presentRatesVC() {
-        let ratesVC                 = CurrentRatesVC()
-        let navigationController    = UINavigationController(rootViewController: ratesVC)
+        let ratesVC = CurrentRatesVC()
+        let navigationController = UINavigationController(rootViewController: ratesVC)
         present(navigationController, animated: true)
     }
     
@@ -67,6 +69,7 @@ extension MoreInfoVC {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! MoreInfoCell
+        cell.selectionStyle = .none
         cell.set(data: tableData, row: indexPath.row)
         return cell
     }
@@ -83,11 +86,23 @@ extension MoreInfoVC {
     
     func configureView() {
         title = "Calculator Info"
+        
+        ratesStatusLabel.text = model.exchangeRates.status
+        ratesStatusLabel.textColor = model.exchangeRates.isOverHourOld ? .systemRed : .systemGreen
+        ratesStatusLabel.numberOfLines = 2
+        ratesStatusLabel.textAlignment = .center
+        ratesStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        tableFooter.addSubview(ratesStatusLabel)
         tableFooter.addSubview(copyrightLabel)
 
         NSLayoutConstraint.activate([
-            copyrightLabel.topAnchor.constraint(equalTo: tableFooter.topAnchor, constant: 10),
-            copyrightLabel.centerXAnchor.constraint(equalTo: tableFooter.centerXAnchor),
+            ratesStatusLabel.topAnchor.constraint(equalTo: tableFooter.topAnchor, constant: 10),
+            ratesStatusLabel.leadingAnchor.constraint(equalTo: tableFooter.leadingAnchor, constant: 10),
+            ratesStatusLabel.trailingAnchor.constraint(equalTo: tableFooter.trailingAnchor, constant: -10),
+            copyrightLabel.topAnchor.constraint(equalTo: ratesStatusLabel.bottomAnchor, constant: 10),
+            copyrightLabel.leadingAnchor.constraint(equalTo: tableFooter.leadingAnchor, constant: 10),
+            copyrightLabel.trailingAnchor.constraint(equalTo: tableFooter.trailingAnchor, constant: -10)
         ])
     }
     

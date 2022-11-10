@@ -26,16 +26,20 @@ class MoreInfoCell: UITableViewCell {
 
     
     func configure() {
+        
         let padding: CGFloat = 10
-        backgroundColor = .tertiarySystemBackground
+        backgroundColor = .systemBackground
+        
+        itemLabel.font = Fonts.settingsItem
+        itemLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        detailLabel.font = Fonts.settingsDetail
+        detailLabel.textColor = .link
+        detailLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         addSubview(itemLabel)
         addSubview(detailLabel)
-
-        itemLabel.translatesAutoresizingMaskIntoConstraints = false
-        detailLabel.translatesAutoresizingMaskIntoConstraints = false
-        itemLabel.font          = Fonts.settingsItem
-        detailLabel.font        = Fonts.settingsDetail
-        detailLabel.textColor   = .link
+        
         NSLayoutConstraint.activate([
             itemLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
             itemLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -64,9 +68,9 @@ class MoreInfoCell: UITableViewCell {
             break
         }
               
-        itemLabel.text      = data[row]
-        detailLabel.text    = detailText
-        accessoryType       = symbol != nil ? symbol! : .none
+        itemLabel.text = data[row]
+        detailLabel.text = detailText
+        accessoryType = symbol != nil ? symbol! : .none
     }
    
 }

@@ -29,6 +29,8 @@ class MainScreenVC: UIViewController {
         model.retrieveUserDefaults()
         model.updateExchangeRates()
         funcKeypad.updateTitleLabels()
+        
+        
     }
     
     
