@@ -93,7 +93,7 @@ class CalculatorDisplay: UIView {
         
         switch model.mode {
         
-        case .displaying_error:
+        case .displaying_error, .function_complete:
             textToDisplay = model.displayRegister.data
         
         default:

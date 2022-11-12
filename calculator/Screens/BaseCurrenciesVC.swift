@@ -23,7 +23,6 @@ class BaseCurrenciesVC: UITableViewController {
         
         title = "Select Base Currency"
         
-        tableView.tableFooterView = UIView(frame: .zero)
         tableView.register(BaseCurrenciesCell.self, forCellReuseIdentifier: cellID)
         
         // loads the table data with the list of countries from the constant struct
@@ -33,6 +32,15 @@ class BaseCurrenciesVC: UITableViewController {
         
         reloadTable()
         scrollToSelection()
+    }
+    
+    
+    private func dismissOnMainThread() {
+
+        DispatchQueue.main.async {
+            // removes modal view controller
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     
@@ -48,6 +56,7 @@ class BaseCurrenciesVC: UITableViewController {
             }
         }
         
+        guard currentIndex != nil else { return }
         tableView.scrollToRow(at: currentIndex, at: .middle, animated: false)
     }
         
@@ -82,7 +91,7 @@ class BaseCurrenciesVC: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID) as! BaseCurrenciesCell
         
         // true if the current row is the selected item
-        let isSelectedItem = currentIndex == indexPath
+        let isSelectedItem = currentIndex ?? IndexPath(row: -1, section: 0 ) == indexPath
         
         // passes the table information to the cell
         cell.set(rowData: tableData[indexPath.row], isCurrentSelection: isSelectedItem)
@@ -97,10 +106,21 @@ class BaseCurrenciesVC: UITableViewController {
         
         // sets the user defaults to the newly selected code and updates the saved exchange rates
         model.userDefaults.baseCurrency  = selectedCountryCode
-        model.storeUserDefaults()
-        model.updateExchangeRates()
-        
-        // removes modal view controller
-        navigationController?.popViewController(animated: true)
+        model.updateExchangeRates(completed: {
+            if self.model.exchangeRates.base != self.model.userDefaults.baseCurrency {
+                
+                // if the exchanges were not updated with the new base, then resets back to the old data and gives a warning message
+                
+                self.model.userDefaults.baseCurrency = self.model.exchangeRates.base
+                self.model.storeUserDefaults()
+                let message = "Due to a network issue, the base country cannot be changed at this time.  Please try again later."
+                self.presentAlertOnMainThread(title: "Network Problem", message: message)
+            }
+            else {
+                
+                // if everything changed correctly then goes back to the MoreInfoVC
+                self.dismissOnMainThread()
+            }
+        })
     }
 }

@@ -24,7 +24,15 @@ enum CalcModes {
     case entering_second
     case operation_complete
     case displaying_error
+    case function_operation
+    case function_complete
 }
+
+enum FunctionMode {
+    case entering_conversion
+    case entering_formula
+}
+
 
 struct Fonts {
     static let keypadButton         = UIFont.systemFont(ofSize: 36, weight: .regular)
@@ -93,7 +101,7 @@ struct ImageSymbols {
     static let buttonGrid           = UIImage(systemName: "square.grid.4x3.fill")
     static let dollarSign           = UIImage(systemName: "dollarsign.circle")
     static let infoCircle           = UIImage(systemName: "info.circle")
-    static let functionSym          = UIImage(systemName: "function")
+    static let functionSym          = UIImage(systemName: "f.cursive.circle")
     static let settingsGear         = UIImage(systemName: "gear")
     static let arrowRight           = UIImage(systemName: "arrowtriangle.right.fill")
     static let arrowDown            = UIImage(systemName: "arrowtriangle.down.fill")
@@ -253,7 +261,6 @@ struct CountryData {
         "MMK": "Myanma Kyat",
         "MNT": "Mongolian Tugrik",
         "MOP": "Macanese Pataca",
-        "MRO": "Mauritanian Ouguiya (pre-2018)",
         "MRU": "Mauritanian Ouguiya",
         "MUR": "Mauritian Rupee",
         "MVR": "Maldivian Rufiyaa",
@@ -291,7 +298,6 @@ struct CountryData {
         "SOS": "Somali Shilling",
         "SRD": "Surinamese Dollar",
         "SSP": "South Sudanese Pound",
-        "STD": "São Tomé and Príncipe Dobra (pre-2018)",
         "STN": "São Tomé and Príncipe Dobra",
         "SVC": "Salvadoran Colón",
         "SYP": "Syrian Pound",
@@ -310,7 +316,6 @@ struct CountryData {
         "USD": "United States Dollar",
         "UYU": "Uruguayan Peso",
         "UZS": "Uzbekistan Som",
-        "VEF": "Venezuelan Bolívar Fuerte (Old)",
         "VES": "Venezuelan Bolívar Soberano",
         "VND": "Vietnamese Dong",
         "VUV": "Vanuatu Vatu",

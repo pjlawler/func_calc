@@ -19,5 +19,17 @@ struct DefaultData: Codable {
     var funcButton_8: String?
     var favorites: [String]?
     var showingFavorites: Bool?
-    var downloadErrorWarned: Date?
+    var errorWarningTimeStamp: Int?
+    
+    var hoursSinceWarned: Int {
+        
+        // if the network erro warning was display returns the hours since last shown to user
+        
+        guard errorWarningTimeStamp != nil else { return 0 }
+        return (Int(Date().timeIntervalSince1970) - errorWarningTimeStamp!) / 3600
+    }
 }
+
+
+
+  

@@ -18,19 +18,27 @@ class MainScreenVC: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        model.initialDataLoad { showWarning in
+            if showWarning {
+                // shows warning once in a 24-hour period if the data isn't current
+                self.presentAlertOnMainThread(title: "Network Problem", message: self.model.exchangeRates.alertMessage)
+            }
+            
+            self.model.userDefaults.funcButton_1 = "USD\(Symbols.convertTo)THB"
+            self.model.userDefaults.funcButton_2 = "THB\(Symbols.convertTo)USD"
+            self.model.userDefaults.funcButton_3 = "USD\(Symbols.convertTo)SGD"
+            self.model.userDefaults.funcButton_4 = "SGD\(Symbols.convertTo)USD"
+            
+            self.model.storeUserDefaults()
+            
+        }
         
-//        let testData = DefaultData(baseCurrency: "THB", funcButton_1: "\("THB")\(Symbols.convertTo)\("USD")", funcButton_2: "\("USD")\(Symbols.convertTo)\("THB")")
-//        model.userDefaults = testData
-//        model.saveTestData()
         
         configureViewController()
         configureNavbar()
         configureComponents()
-        model.retrieveUserDefaults()
-        model.updateExchangeRates()
         funcKeypad.updateTitleLabels()
-        
-        
     }
     
     
@@ -44,7 +52,7 @@ class MainScreenVC: UIViewController {
     
     func configureNavbar() {
         let functions = UIBarButtonItem(image: UIImage(systemName: "f.cursive.circle") , style: .plain, target: self, action: #selector(navbarFunctionsTapped))
-        let moreInfo = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(navbarMoreInfoTapped))
+        let moreInfo = UIBarButtonItem(image: UIImage(systemName: "questionmark.circle"), style: .plain, target: self, action: #selector(navbarMoreInfoTapped))
         let titleImageView = UIImageView(image: UIImage(named: "FCIcon_trans"))
         titleImageView.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
         titleImageView.contentMode = .scaleAspectFit
@@ -52,7 +60,7 @@ class MainScreenVC: UIViewController {
         navigationItem.leftBarButtonItems = [functions]
         navigationItem.rightBarButtonItems = [moreInfo]
     }
-       
+    
     
     func configureComponents() {
         // gets the custom button stack from each component
@@ -105,24 +113,16 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
     
     func functionKeyTapped(button: FuncButton) {
         
-        let rateText: String!
+        guard button.titleLabel?.text != nil else { return }
         
-        // called when any function key is tapped
-        if let rate = model.exchangeRates!.rates["THB"] {
-            rateText = "\(String(describing: rate!))"
-        }
-        else {
-            rateText = "THB Not Found"
-        }
-        
-        model.displayFunctionResult(mainText: rateText, auxText: "Current Thai Bhat")
-        model.mode = .displaying_error
+        model.performFunctionOperation(on: button.titleLabel!.text!)
         display.updateDisplay()
+        calcKeypad.updateButtonTitles()
     }
     
     
     func keyboardTapped(button: CalcButton) {
-
+        
         // called when any keypad button is tapped
         
         guard let buttonText = button.titleLabel?.text else { return }

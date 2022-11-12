@@ -75,7 +75,15 @@ class CalcKeypad {
         case .entering_first, .awaiting_second, .entering_second:
             clearButton.updateTitle(title: "CE")
             equalsButton.updateTitle(title: "=")
+            
+        case .function_operation:
+            clearButton.updateTitle(title: "C")
+            equalsButton.updateTitle(title: "ENT")
         
+        case .function_complete:
+            clearButton.updateTitle(title: "AC")
+            equalsButton.updateTitle(title: "USE")
+            
         default:
             clearButton.updateTitle(title: "AC")
             equalsButton.updateTitle(title: "=")

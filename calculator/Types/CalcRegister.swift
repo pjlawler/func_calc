@@ -12,6 +12,7 @@ struct CalcRegister {
     var data: String?
     
     private var maxValue = 100000000.0
+   
     
     var isDisplayingTime: Bool {
         guard let _ = data else { return false }
@@ -58,6 +59,19 @@ struct CalcRegister {
     var displayFormatted: String {
         if isDisplayingTime { return formattedTime }
         else { return formattedDecimal }
+    }
+    
+    var formattedCurrency: String {
+        
+        guard abs(decimalValue) < 9999999999.99 else {return "Error"}
+        
+        let formatter =  NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.groupingSeparator = ","
+        formatter.usesGroupingSeparator = true
+        formatter.alwaysShowsDecimalSeparator = true
+
+        return formatter.string(from: decimalValue as NSNumber)!
     }
         
     var formattedDecimal: String {

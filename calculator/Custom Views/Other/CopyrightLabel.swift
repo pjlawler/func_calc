@@ -19,7 +19,7 @@ class CopyrightLabel: UILabel {
     }
     
     func configure() {
-        text   = Constants.appCopyright
+        attributedText = InformationText.copyrightText
         numberOfLines = 0
         textAlignment = .center
         translatesAutoresizingMaskIntoConstraints = false

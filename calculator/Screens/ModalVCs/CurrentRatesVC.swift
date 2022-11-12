@@ -41,6 +41,8 @@ class CurrentRatesVC: UIViewController {
     
     private func updateTableData() {
         
+        guard model.exchangeRates.rates?.count ?? 0 > 0 else { return }
+        
         // retrieves user default if showing only favorites or not, not if nil
         showingFavorites = model.userDefaults.showingFavorites ?? false
 
@@ -61,7 +63,7 @@ class CurrentRatesVC: UIViewController {
             let isFavorite = model.userDefaults.favorites?.contains(country.key) ?? false
             
             // populates the data for the object
-            currency.rateToBase = model.exchangeRates.rates[country.key]! ?? 0.0
+            currency.rateToBase = model.exchangeRates.rates?[country.key]! ?? 0.0
             currency.base = model.exchangeRates.base
             currency.code = country.key
             currency.favorited = isFavorite
@@ -205,7 +207,7 @@ extension CurrentRatesVC: UISearchBarDelegate {
 extension CurrentRatesVC {
     
     func configureView() {
-        title = "Currency Rates to \(model.exchangeRates.base)"
+        title = "Currency Rates to \(String(describing: model.exchangeRates.base ?? ""))"
         view.backgroundColor = .systemBackground
         
         // sets up so a tap on the screen will dismiss the keyboard when typing in the search bar

@@ -62,6 +62,7 @@ class MoreInfoCell: UITableViewCell {
             symbol                  = AccessoryType.disclosureIndicator
         case 2:
             symbol                  = AccessoryType.detailButton
+           
         case 3:
             symbol                  = AccessoryType.disclosureIndicator
         default:

@@ -15,13 +15,15 @@ class CalculatorModel {
     let network = NetworkManager.shared
     let storage = LocalStorageManager.shared
     var userDefaults = DefaultData()
-    var exchangeRates: RateData!
+    var exchangeRates = RateData()
     var auxDisplay: String?
     var displayRegister = CalcRegister()
     var mathRegister = CalcRegister()
     var operationRegister: String!
     var calculationList = ""
     var mode: CalcModes = .all_clear
+    var functionMode: FunctionMode!
+    var functionToPerform: String!
         
     func keypadTapped(key: String) {
     
@@ -166,7 +168,7 @@ class CalculatorModel {
             displayRegister.data = numberKey
             mode = .entering_first
             
-        case .entering_first, .entering_second:
+        case .entering_first, .entering_second, .function_operation:
             
             // user is entering numbers into the register
             
@@ -256,6 +258,15 @@ class CalculatorModel {
         displayRegister.data = mathRegister.data
     }
     
+    private func setDispayWithFunctionResult(data decimal: Double, roundTo: Double = 0.01, prefix: String = "", suffix: String = "") {
+        let multiplier = 1 / roundTo
+        let numberToDisplay = (decimal * multiplier).rounded() / multiplier
+        displayRegister.data = "\(numberToDisplay)"
+        displayRegister.data = "\(prefix)\(displayRegister.displayFormatted) \(suffix)"
+        mode = .function_complete
+        
+    }
+    
     
     private func setDisplayRegisterWithErrorText(_ errorText:String) {
         displayRegister.data = errorText
@@ -288,46 +299,72 @@ extension CalculatorModel {
         setDisplayRegister(data: displayRegister.decimalValue, asTime: !displayRegister.isDisplayingTime)
         mode = .operation_complete
     }
-      
     
-    func updateExchangeRates() {
+    func initialDataLoad(showWarning: @escaping(Bool) -> Void ) {
         
-        // gets the rates, if any, that are saved in local storage and stores them in the local variable.
-        // if there is local storage is empty or it's older than 1-hour old it will attempt to download the latest
-    
+        // loads the user defaults and exchange rates
+        retrieveUserDefaults()
         retrieveRates()
-            
-        if userDefaults.baseCurrency == nil {
-            userDefaults.baseCurrency = "USD"
-            storeUserDefaults()
-        }
+        
+        updateExchangeRates(completed: {
+            if self.exchangeRates.downloadStatus != .current {
+                
+                // if the data is not current, then will display a warning
+                
+                // enusres the warning only displays once every 24-hours
+                if self.userDefaults.errorWarningTimeStamp != nil && self.userDefaults.hoursSinceWarned <= 24 { return }
+                
+                // sets the time stamp of the warning
+                self.userDefaults.errorWarningTimeStamp = Int(Date().timeIntervalSince1970)
+                self.storeUserDefaults()
+                showWarning(true)
+                return
+            }
+        })
+        showWarning(false)
+    }
+    
+    func updateExchangeRates(completed: @escaping() -> Void) {
         
         // if the rates need to be updated, it downloads them from through the network manager
-        if exchangeRates == nil || exchangeRates.isOverHourOld || userDefaults.baseCurrency != exchangeRates.base {
+        if exchangeRates.isOverHourOld || userDefaults.baseCurrency != exchangeRates.base {
             network.getRates(baseCurrency: userDefaults.baseCurrency!) { [weak self] result in
-                guard let self = self else {return }
+                
+                guard let self = self else { return }
+                
                 switch result {
+                
                 case .success(let success):
                     
                     // stores the rates in the local variable
                     self.exchangeRates = success
-                    print("downloaded the latest rates!")
-                    
+                    print("downloaded the latest rate data")
+
                     // saves the downloaded rates to local storage
                     if self.storage.saveExchangeRates(success) {
-                        print("rates were saved to local storage!")
+                        print("new rate data saved to local storage")
                     }
+                    
+                    self.userDefaults.errorWarningTimeStamp = nil
+                    self.storeUserDefaults()
+                    
+                    completed()
+                
                 case .failure(let failure):
+                    
+                    // if unable to download new data, keeps the old ratedata if not nil
                     print("network manager error - \(failure)")
+                    completed()
                 }
             }
+        }
+        else {
+            completed()
         }
     }
     
     
-    
-    
-    private func retrieveRates() {
+    func retrieveRates() {
         
         // retrieves the stored rates, if any, from local storage
         
@@ -336,10 +373,13 @@ extension CalculatorModel {
             switch result {
             case .success(let success):
                 self.exchangeRates = success
-                print("retrieved rates from local storage. base: \(success.base)")
+                print("retrieved rates from local storage. base: \(String(describing: success.base))")
 
             case .failure(let failure):
-                print("local storage exchange rates error - \(failure)")
+                
+                // if unable to retrieve data, keeps the old data if not nil
+                self.exchangeRates.rates = self.exchangeRates.rates != nil ? self.exchangeRates.rates : [:]
+                print("local storage error - \(failure)")
             }
         }
     }
@@ -359,6 +399,12 @@ extension CalculatorModel {
                 print("local storgage user defaults error - \(failure)")
             }
         }
+        
+        if userDefaults.baseCurrency == nil {
+            print("USD being defaulted")
+            userDefaults.baseCurrency = "USD"
+            storeUserDefaults()
+        }
     }
     
     func storeUserDefaults() {
@@ -369,18 +415,67 @@ extension CalculatorModel {
 }
 
 extension CalculatorModel {
-    
-    func displayFunctionResult(mainText: String, auxText: String) {
-        displayRegister.data = mainText
-        auxDisplay = auxText
-    }
-    
-    private func performConversion(with number: Double, from fromUnit: ConversionUnit, to toUnit: ConversionUnit) {
+
+    func performFunctionOperation(on label: String) {
         
+       functionToPerform = label
+        
+        if functionToPerform.contains(Symbols.convertTo) {
+            functionMode = .entering_conversion
+            if displayRegister.data != nil { performConversion() }
+            print("Conversion")
+        }
+        else {
+            functionMode = .entering_formula
+            
+            print("Function")
+        }
      
     }
     
-    
+    private func performConversion() {
+        
+        let items = functionToPerform.split(separator: Symbols.convertTo)
+
+        guard items.count == 2 else { return }
+        
+        let convertAmount = displayRegister.decimalValue
+        let isCurrency = exchangeRates.rates?.contains(where: {$0.key == items[0]}) ?? false
+        let fromAmount = displayRegister.displayFormatted
+        var fromPrefix = ""
+        var fromSuffix = ""
+        var toPrefix = ""
+        var toSuffix = ""
+        var resultSuffix = ""
+        
+        let multiplier: Double = {
+            if isCurrency {
+                let from = exchangeRates.rates?[String(items[0])] ?? 0.0
+                let to = exchangeRates.rates![String(items[1])] ?? 0.0
+                
+                fromSuffix = String(items[0])
+                toSuffix = String(items[1])
+                
+                toPrefix = String(CountryData.currencySymbols[String(items[1])] ?? Character(""))
+                fromPrefix = String(CountryData.currencySymbols[String(items[0])] ?? Character(""))
+                
+                resultSuffix = toPrefix == "" ? toSuffix : ""
+                
+                return to!/from!
+            }
+            else {
+                return 0.0
+            }
+        }()
+        
+        setDispayWithFunctionResult(data: convertAmount * multiplier, prefix: toPrefix, suffix: resultSuffix)
+        auxDisplay = "\(fromPrefix)\(fromAmount) \(fromSuffix) converted to \(toSuffix):"
+        
+        
+        
+        
+        
+    }
     
     
 }

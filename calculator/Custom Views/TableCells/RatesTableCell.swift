@@ -13,7 +13,7 @@ class RatesTableCell: UITableViewCell {
     
     let countryNameLabel    = RatesCellLabel(textColor: .label, textAlignment: .left)
     let countryCodeLabel    = RatesCellLabel(textColor: .label, textAlignment: .center)
-    let currentRateLabel    = RatesCellLabel(textColor: .label, textAlignment: .center)
+    let currentRateLabel    = RatesCellLabel(textColor: .systemGreen, textAlignment: .center)
     let button              = FavoriteButton(frame: .zero)
     let formatter           = NumberFormatter()
 
