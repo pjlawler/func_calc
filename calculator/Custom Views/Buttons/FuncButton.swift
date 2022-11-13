@@ -23,13 +23,13 @@ class FuncButton: UIButton {
         super.init(frame: .zero)
        
         // sets background color
-        backgroundColor = .systemBrown.withAlphaComponent(0.50)
+        backgroundColor = .systemGray.withAlphaComponent(0.50)
         
         // styles button
         setTitleColor(.label, for: .normal)
         titleLabel?.font = Fonts.functionButtonText
         layer.borderWidth = 1.0
-        layer.borderColor = UIColor.systemBrown.cgColor
+        layer.borderColor = UIColor.systemGray.cgColor
         layer.cornerRadius = size / 6
         clipsToBounds = true
 

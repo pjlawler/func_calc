@@ -27,9 +27,13 @@ class MainScreenVC: UIViewController {
             
             self.model.userDefaults.funcButton_1 = "USD\(Symbols.convertTo)THB"
             self.model.userDefaults.funcButton_2 = "THB\(Symbols.convertTo)USD"
-            self.model.userDefaults.funcButton_3 = "USD\(Symbols.convertTo)SGD"
-            self.model.userDefaults.funcButton_4 = "SGD\(Symbols.convertTo)USD"
-            
+            self.model.userDefaults.funcButton_3 = "\(Symbols.celsius)\(Symbols.convertTo)\(Symbols.fahrenheit)"
+            self.model.userDefaults.funcButton_4 = "\(Symbols.fahrenheit)\(Symbols.convertTo)\(Symbols.celsius)"
+            self.model.userDefaults.funcButton_5 = "USD\(Symbols.convertTo)JPY"
+            self.model.userDefaults.funcButton_6 = "JPY\(Symbols.convertTo)USD"
+            self.model.userDefaults.funcButton_7 = "PMT"
+            self.model.userDefaults.funcButton_8 = ""
+
             self.model.storeUserDefaults()
             
         }

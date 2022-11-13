@@ -28,9 +28,19 @@ enum CalcModes {
     case function_complete
 }
 
+
+
+
 enum FunctionMode {
     case entering_conversion
     case entering_formula
+}
+
+enum DisplayAs {
+    case currency
+    case temperature
+    case decimal
+    case time
 }
 
 
@@ -62,6 +72,11 @@ struct Fonts {
     static let settingsItem         = UIFont.systemFont(ofSize: 17, weight: .regular)
     static let settingsDetail       = UIFont.systemFont(ofSize: 17, weight: .regular)
 }
+//
+//°
+//DEGREE SIGN
+//Unicode: U+00B0, UTF-8: C2 B0
+
 
 struct Symbols {
     static let plusMinus: Character     = "\u{2213}"
@@ -75,6 +90,7 @@ struct Symbols {
     static let convertTo: Character     = "\u{21A6}"
     static let celsius: Character       = "\u{2103}"
     static let fahrenheit: Character    = "\u{2109}"
+    static let kelvin: Character        = "\u{212A}"
     static let dollar: Character        = "\u{0024}"
     static let euro: Character          = "\u{20AC}"
     static let yen: Character           = "\u{00A5}"

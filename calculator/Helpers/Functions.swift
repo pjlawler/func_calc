@@ -7,6 +7,37 @@
 
 import Foundation
 enum Functions {
+    
+    static let formulas: [FormulaUnit] = [
+        FormulaUnit(title: "Monthly Payment Calculation", formula: "(?a*(?c/12))/(1-((1+(?c/12))**(?b*-1)))", category: Categories.financial, symbol: "PMT", inputCues: ["Amount to be borrowed?", "Length of Loan (Months)?", "Interest Rate APR (i.e. 0.065)?"], favorite: nil, answerPrefix: "Payment ", answerSuffix: "/mo"),
+        FormulaUnit(title: "Miles per Gallon", formula: "?a/?b", category: Categories.automotive, symbol: "MPG", inputCues: ["Miles Traveled?", "Gallons of Fuel Consumed?"], favorite: nil, answerPrefix: nil, answerSuffix: " mpg"),
+        FormulaUnit(title: "Kilometers per Liter", formula: "?a/?b", category: Categories.automotive, symbol: "KPG", inputCues: ["Kilometers Traveled?", "Liters of Fuel Consumed?"], favorite: nil, answerPrefix: nil, answerSuffix: "KPG"),
+        FormulaUnit(title: "Time to Destination", formula: "?a/?b\(Symbols.hourglass)", category: Categories.automotive, symbol: "TtoD", inputCues: ["Distance to destination?", "Speed?"], favorite: nil, answerPrefix: "Time to Dest. ", answerSuffix: nil),
+        FormulaUnit(title: "Annual Salary", formula: "?a*2080", category: Categories.financial, symbol: "Salary", inputCues: ["Hourly rate?"], favorite: nil, answerPrefix: nil, answerSuffix: "/yr"),
+        FormulaUnit(title: "Future Value - Compounding Interest", formula: "?a*(1+?c/12)**?b", category: Categories.financial, symbol: "FV(Ci)", inputCues: ["Amount invested?", "Length of investment (Months)?", "Enter interest APR (i.e. 0.05)?"], favorite: nil, answerPrefix: "FV ", answerSuffix: nil),
+        FormulaUnit(title: "TIP - Gratuity Amount", formula: "?a*?b", category: Categories.financial, symbol: "TIP", inputCues: ["Bill Amount (before taxes)?", "Tip percentage (i.e. 0.18)?"], favorite: nil, answerPrefix: "Tip ", answerSuffix: nil),
+        FormulaUnit(title: "Body Mass Index (Standard)", formula: "(?b * 703)/(?a**2)", category: Categories.health, symbol: "BMI(std)", inputCues: ["Height(in)?", "Weight(lb)?"], favorite: nil, answerPrefix: "BMI ", answerSuffix: nil),
+        FormulaUnit(title: "Body Mass Index (Metric)", formula: "(?b)/(?a**2)", category: Categories.health, symbol: "BMI(SI)", inputCues: ["Height(m)?", "Weight(kg)?"], favorite: nil, answerPrefix: "BMI ", answerSuffix: nil),
+        FormulaUnit(title: "Airport Density Altitude", formula: "?a + (120 * (?b - (15 - 2 * ?a/1000)))", category: Categories.aviation, symbol: "DALT", inputCues: ["Airport's elevation?", "Outside air temperature (\(Symbols.celsius))?"], favorite: nil, answerPrefix: "DALT ", answerSuffix: "'"),
+        FormulaUnit(title: "Maximum HoldingTime", formula: "(?a - (?b + (?c * ?d))) / ?c\(Symbols.hourglass)", category: Categories.aviation, symbol: "Hold-T", inputCues:  ["Fuel onboard when entering hold?", "Reserve fuel required/desired?", "Fuel burn to the alternate airport?", "Total time to alternate(s) (include approach times)"], favorite: nil, answerPrefix: "Max Hold ", answerSuffix: nil),
+        FormulaUnit(title: "Bingo Fuel", formula: "?a + ?b * (?c + ?d)", category: Categories.aviation, symbol: "B-FUEL", inputCues: ["Reserve required/desired?", "Fuel burn (per hour)?", "Time to destination airport (including the approach and missed time)?", "Time to alternates(s)"], favorite: nil, answerPrefix: "Bingo Fuel ", answerSuffix: nil),
+        FormulaUnit(title: "Rate of Descent", formula: "?b / 60 * 6076.12 * function(?a, 'tangent')", category: Categories.aviation, symbol: "ROD", inputCues:  ["Desired glidepath angle (deg)?", "Aircraft's groundspeed (Knots)?"], favorite: nil, answerPrefix: nil, answerSuffix: " fpm"),
+        FormulaUnit(title: "Top of descent (dist)", formula: "((?b - ?c) / function(?a, 'tangent')) / 6076.12", category: Categories.aviation, symbol: "TOD (d)", inputCues: ["Desired glidepath angle (deg)? >", "Aircraft's altitude (ft)?>", "Destination field's elevation (ft)?>"], favorite: nil, answerPrefix: "TOD ", answerSuffix: "nm"),
+        FormulaUnit(title: "Voltage", formula: "?a/?b", category: Categories.electronics, symbol: "Volts(E)", inputCues: ["Power (Watts)?", "Current (amps)?"], favorite: nil, answerPrefix: nil, answerSuffix: " volts"),
+        FormulaUnit(title: "Current (Amps)", formula: "?a/?b", category: Categories.electronics, symbol: "Amps(I)", inputCues: ["Power (Watts)?", "Volts?"], favorite: nil, answerPrefix: nil, answerSuffix: " amps"),
+        FormulaUnit(title: "Power (Watts)", formula: "?a*?b", category: Categories.electronics, symbol: "Power(P)", inputCues: ["Volts?", "Current (Amps)?" ], favorite: nil, answerPrefix: nil, answerSuffix: " watts"),
+        FormulaUnit(title: "Tangent(degrees)", formula: "function(?a, 'tangent')", category: Categories.trig, symbol: "Tan", inputCues: ["Angle (degrees)?"], favorite: nil, answerPrefix: "Tan ", answerSuffix: nil),
+        FormulaUnit(title: "Sine (degrees)", formula: "function(?a, 'sinus')", category: Categories.trig, symbol: "Sin", inputCues: ["Angle (degrees)?"], favorite: nil, answerPrefix: "Sin ", answerSuffix: nil),
+        FormulaUnit(title: "Cosine (degrees)", formula: "function(?a, 'cosine')", category: Categories.trig, symbol: "Cos", inputCues: ["Angle (degrees)?"], favorite: nil, answerPrefix: "Cos ", answerSuffix: nil),
+        FormulaUnit(title: "Volume of concrete slab", formula: "?a * ?b * (?c / 12) / 27", category: Categories.construction, symbol: "SLAB", inputCues: ["Slab length (feet)?", "Slab width (feet)?", "Slab thickness (inches)?"], favorite: nil, answerPrefix: "Volume ", answerSuffix: " yd³"),
+        FormulaUnit(title: "Volume of concrete footings", formula: "((?a / 12) * (?b / 12) * ?c) / 27", category: Categories.construction, symbol: "FTGS", inputCues: ["Footing depth (feet)?", "Footing width (feet)?", "Footing length (inches)?"], favorite: nil, answerPrefix: "Volume ", answerSuffix: " yd³"),
+        FormulaUnit(title: "Volume of concrete column", formula: "(([Pi] * ((?a/36)**2)) * (?b/36))", category: Categories.construction, symbol: "CLMNS", inputCues: ["Column diameter (inches)?", "Column height (inches)?"], favorite: nil, answerPrefix: "Volume ", answerSuffix: " yd³"),
+        FormulaUnit(title: "Speed of Sound", formula: "(643.855 * (( ?a + 273.15) / 273.15 )**0.5)", category: Categories.aviation, symbol: "Vsound", inputCues: ["Temperature (\(Symbols.celsius))?"], favorite: nil, answerPrefix: nil, answerSuffix: " kt"),
+        FormulaUnit(title: "MACH Number", formula: "?a / (643.855 * ((?b + 273.15) / 273.15)**0.5)", category: Categories.aviation, symbol: "MACH#", inputCues: ["TAS (kt)?","Temperature (\(Symbols.celsius))?"], favorite: nil, answerPrefix: nil, answerSuffix: " Mach"),
+        FormulaUnit(title: "Crosswind", formula: "abs(function((360 - ?a * 10) - (360 - ?b), 'sinus') * ?c)", category: Categories.aviation, symbol: "XWIND", inputCues: ["Runway Number?", "Wind Direction (ie 40)?", "Wind Speed (kts)"], favorite: nil, answerPrefix: nil, answerSuffix: " kt")
+    ]
+    
+    
     static let conversions: [ConversionUnit] = [
         ConversionUnit(title: "Centimeter", multiplier: 0.01, category: Categories.length, symbol: "cm", favorite: nil, answerPrefix: nil, answerSuffix: " cm"),
         ConversionUnit(title: "Decimeter", multiplier: 0.1, category: Categories.length, symbol: "dm", favorite: nil, answerPrefix: nil, answerSuffix: " dm"),
@@ -64,9 +95,9 @@ enum Functions {
         ConversionUnit(title: "Foot per Hour", multiplier: 0.0000846667, category: Categories.velocity, symbol: "ft/h", favorite: nil, answerPrefix: nil, answerSuffix: " ft/h"),
         ConversionUnit(title: "Foot per Minute", multiplier: 0.00508, category: Categories.velocity, symbol: "ft/m", favorite: nil, answerPrefix: nil, answerSuffix: " ft/m"),
         ConversionUnit(title: "Foot per Second", multiplier: 0.3048, category: Categories.velocity, symbol: "ft/s", favorite: nil, answerPrefix: nil, answerSuffix: " ft/s"),
-        ConversionUnit(title: "Celsius", multiplier: nil, category: Categories.temperature, symbol: String(Symbols.celsius), favorite: nil, answerPrefix: nil, answerSuffix: nil),
-        ConversionUnit(title: "Fahrenheit", multiplier: nil, category: Categories.temperature, symbol: String(Symbols.fahrenheit), favorite: nil, answerPrefix: nil, answerSuffix: nil),
-        ConversionUnit(title: "Kelvin", multiplier: nil, category: Categories.temperature, symbol: "K", favorite: nil, answerPrefix: nil, answerSuffix: nil),
+        ConversionUnit(title: "Celsius", multiplier: nil, category: Categories.temperature, symbol: String(Symbols.celsius), favorite: nil, answerPrefix: nil, answerSuffix: String(Symbols.celsius)),
+        ConversionUnit(title: "Fahrenheit", multiplier: nil, category: Categories.temperature, symbol: String(Symbols.fahrenheit), favorite: nil, answerPrefix: nil, answerSuffix: String(Symbols.fahrenheit)),
+        ConversionUnit(title: "Kelvin", multiplier: nil, category: Categories.temperature, symbol: String(Symbols.kelvin), favorite: nil, answerPrefix: nil, answerSuffix: String(Symbols.kelvin)),
         ConversionUnit(title: "Square Kilometer", multiplier: 1000000, category: Categories.area, symbol: "km²", favorite: nil, answerPrefix: nil, answerSuffix: " km²"),
         ConversionUnit(title: "Square Centimeter", multiplier: 0.0001, category: Categories.area, symbol: "cm²", favorite: nil, answerPrefix: nil, answerSuffix: " cm²"),
         ConversionUnit(title: "Square Millimeter", multiplier: 0.000001, category: Categories.area, symbol: "mm²", favorite: nil, answerPrefix: nil, answerSuffix: " mm²"),

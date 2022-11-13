@@ -32,21 +32,30 @@ struct CalcRegister {
         
         guard let _ = data else { return 0.0 }
         
-        if !isDisplayingTime {
-           return (data! as NSString).doubleValue
+        var tempData = ""
+        
+        for char in data! {
+            if ["0", "1", "2", "3", "4", "5","6","7","8", "9",".","-",":"].contains(char) {
+                tempData += String(char)
+            }
         }
+        
+        if !isDisplayingTime {
+           return (tempData as NSString).doubleValue
+        }
+        
         else {
             let hours: Double!
             let minutes: Double!
-            let timeParts = data!.split(separator: ":")
+            let timeParts = tempData.split(separator: ":")
             
             switch timeParts.count {
             case 0:
                 hours = 0
                 minutes = 0
             case 1:
-               hours = data!.last == ":" ? Double(Int(timeParts[0])!) : 0
-                minutes = data!.last == ":" ? 0 : Double(Int(timeParts[0])!) / 60
+               hours = tempData.last == ":" ? Double(Int(timeParts[0])!) : 0
+                minutes = tempData.last == ":" ? 0 : Double(Int(timeParts[0])!) / 60
             default:
                 hours = Double(Int(timeParts[0])!)
                 minutes = Double(Int(timeParts[1])!) / 60

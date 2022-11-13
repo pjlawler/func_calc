@@ -11,6 +11,7 @@
 		6842E5A2291DB3A600DE7D83 /* UserInstructionsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6842E5A1291DB3A600DE7D83 /* UserInstructionsVC.swift */; };
 		6842E5A4291EEC6300DE7D83 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6842E5A3291EEC6300DE7D83 /* Functions.swift */; };
 		685006C4291B0D7F003D834D /* FavoriteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685006C3291B0D7F003D834D /* FavoriteButton.swift */; };
+		6862519D29218AEF00162A86 /* FormulaUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862519C29218AEF00162A86 /* FormulaUnit.swift */; };
 		68709FD6291092AA00C1055C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68709FD5291092AA00C1055C /* AppDelegate.swift */; };
 		68709FD8291092AA00C1055C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68709FD7291092AA00C1055C /* SceneDelegate.swift */; };
 		68709FDA291092AA00C1055C /* MainScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68709FD9291092AA00C1055C /* MainScreenVC.swift */; };
@@ -51,6 +52,7 @@
 		6842E5A1291DB3A600DE7D83 /* UserInstructionsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInstructionsVC.swift; sourceTree = "<group>"; };
 		6842E5A3291EEC6300DE7D83 /* Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		685006C3291B0D7F003D834D /* FavoriteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteButton.swift; sourceTree = "<group>"; };
+		6862519C29218AEF00162A86 /* FormulaUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormulaUnit.swift; sourceTree = "<group>"; };
 		68709FD2291092AA00C1055C /* function_calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = function_calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68709FD5291092AA00C1055C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		68709FD7291092AA00C1055C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				6873B1C129187BC80021A528 /* UserDefaults.swift */,
 				688FA024291960C100538084 /* CalcRegister.swift */,
 				688FA0362919F20F00538084 /* Currency.swift */,
+				6862519C29218AEF00162A86 /* FormulaUnit.swift */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -364,6 +367,7 @@
 				68A221E9291335AC0068F250 /* NetworkManager.swift in Sources */,
 				688FA025291960C100538084 /* CalcRegister.swift in Sources */,
 				688FA03B2919F83C00538084 /* RatesCellLabel.swift in Sources */,
+				6862519D29218AEF00162A86 /* FormulaUnit.swift in Sources */,
 				688FA02E2919D78F00538084 /* BaseCurrenciesVC.swift in Sources */,
 				6842E5A2291DB3A600DE7D83 /* UserInstructionsVC.swift in Sources */,
 				685006C4291B0D7F003D834D /* FavoriteButton.swift in Sources */,
