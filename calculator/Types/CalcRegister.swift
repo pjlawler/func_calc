@@ -12,8 +12,7 @@ struct CalcRegister {
     var data: String?
     
     private var maxValue = 100000000.0
-   
-    
+       
     var isDisplayingTime: Bool {
         guard let _ = data else { return false }
         return data!.contains(":")
@@ -34,34 +33,21 @@ struct CalcRegister {
         
         var tempData = ""
         
+        // removes any non-decimal or non-time characters fromt he display register (e.g. function data)
         for char in data! {
             if ["0", "1", "2", "3", "4", "5","6","7","8", "9",".","-",":"].contains(char) {
                 tempData += String(char)
             }
         }
         
+        // returns the value if it's not time
         if !isDisplayingTime {
            return (tempData as NSString).doubleValue
         }
         
+        // if it is time, it converts it to a double and returns
         else {
-            let hours: Double!
-            let minutes: Double!
-            let timeParts = tempData.split(separator: ":")
-            
-            switch timeParts.count {
-            case 0:
-                hours = 0
-                minutes = 0
-            case 1:
-               hours = tempData.last == ":" ? Double(Int(timeParts[0])!) : 0
-                minutes = tempData.last == ":" ? 0 : Double(Int(timeParts[0])!) / 60
-            default:
-                hours = Double(Int(timeParts[0])!)
-                minutes = Double(Int(timeParts[1])!) / 60
-            }
-            
-            return hours + minutes
+            return Utilities().timeToDecimal(tempData)
         }
     }
     
@@ -91,6 +77,8 @@ struct CalcRegister {
         let showDecimal = data!.contains(".") && !useScientific
         var significantDigits = 1
         var trailingZeros = ""
+        let formatter =  NumberFormatter()
+        
         
         if !useScientific {
             
@@ -117,7 +105,6 @@ struct CalcRegister {
             }
         }
     
-        let formatter =  NumberFormatter()
         formatter.numberStyle = useScientific ? .scientific : .decimal
         formatter.exponentSymbol = "e"
         formatter.groupingSeparator = ","
@@ -125,8 +112,14 @@ struct CalcRegister {
         formatter.alwaysShowsDecimalSeparator = showDecimal
         formatter.maximumIntegerDigits = useScientific ? 3 : 10
         formatter.maximumFractionDigits = useScientific ? 3 : 9 - significantDigits
-
-        return formatter.string(from: decimalValue as NSNumber)! + trailingZeros
+        
+        var formattedNumber = formatter.string(from: decimalValue as NSNumber)! + trailingZeros
+        
+        while formattedNumber.count > 13 {
+            formattedNumber = String(formattedNumber.dropLast(1))
+        }
+                
+        return  formattedNumber
     }
     
     var truncatedZeros: String {
@@ -139,10 +132,6 @@ struct CalcRegister {
     }
         
     var formattedTime: String {
-        let hours = String(Int(decimalValue))
-        var minutes = String(Int(((decimalValue - Double(Int(decimalValue))) * 60).rounded()))
-        if minutes.count < 2 { minutes = "0" + minutes}
-        
-        return "\(hours):\(minutes)"
+        return Utilities().doubleToTime(decimalValue)
     }
 }

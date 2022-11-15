@@ -28,9 +28,6 @@ enum CalcModes {
     case function_complete
 }
 
-
-
-
 enum FunctionMode {
     case entering_conversion
     case entering_formula
@@ -72,11 +69,6 @@ struct Fonts {
     static let settingsItem         = UIFont.systemFont(ofSize: 17, weight: .regular)
     static let settingsDetail       = UIFont.systemFont(ofSize: 17, weight: .regular)
 }
-//
-//°
-//DEGREE SIGN
-//Unicode: U+00B0, UTF-8: C2 B0
-
 
 struct Symbols {
     static let plusMinus: Character     = "\u{2213}"
@@ -110,6 +102,7 @@ struct Symbols {
     static let bitcoin: Character       = "\u{20BF}"
     static let lari: Character          = "\u{20BE}"
     static let hourglass: Character     = "\u{29D6}"
+    static let infinity: Character      = "\u{221E}"
     }
 
 

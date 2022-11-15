@@ -12,33 +12,24 @@ class MainScreenVC: UIViewController {
     let funcKeypad = FuncKeypad()
     let calcKeypad = CalcKeypad()
     let model = CalculatorModel.shared
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
+        
+        
+        // loads the data from user defaults and gets the latest exchange rates
         model.initialDataLoad { showWarning in
             if showWarning {
                 // shows warning once in a 24-hour period if the data isn't current
                 self.presentAlertOnMainThread(title: "Network Problem", message: self.model.exchangeRates.alertMessage)
             }
-            
-            self.model.userDefaults.funcButton_1 = "USD\(Symbols.convertTo)THB"
-            self.model.userDefaults.funcButton_2 = "THB\(Symbols.convertTo)USD"
-            self.model.userDefaults.funcButton_3 = "\(Symbols.celsius)\(Symbols.convertTo)\(Symbols.fahrenheit)"
-            self.model.userDefaults.funcButton_4 = "\(Symbols.fahrenheit)\(Symbols.convertTo)\(Symbols.celsius)"
-            self.model.userDefaults.funcButton_5 = "USD\(Symbols.convertTo)JPY"
-            self.model.userDefaults.funcButton_6 = "JPY\(Symbols.convertTo)USD"
-            self.model.userDefaults.funcButton_7 = "PMT"
-            self.model.userDefaults.funcButton_8 = ""
-
-            self.model.storeUserDefaults()
-            
         }
         
-        
+        model.userDefaults.funcButton_8 = "MORT"
+        model.storeUserDefaults()
+
+                
         configureViewController()
         configureNavbar()
         configureComponents()
@@ -112,6 +103,7 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         
         model.backspace()
         display.updateDisplay()
+        calcKeypad.updatedKeyButtons()
     }
     
     
@@ -119,9 +111,9 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         
         guard button.titleLabel?.text != nil else { return }
         
-        model.performFunctionOperation(on: button.titleLabel!.text!)
+        model.functionOperationSelected(for: button.titleLabel!.text!)
         display.updateDisplay()
-        calcKeypad.updateButtonTitles()
+        calcKeypad.updatedKeyButtons()
     }
     
     
@@ -130,9 +122,9 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         // called when any keypad button is tapped
         
         guard let buttonText = button.titleLabel?.text else { return }
-        model.keypadTapped(key: buttonText)
+        model.keypadHandler(key: buttonText)
         display.updateDisplay()
-        calcKeypad.updateButtonTitles()
+        calcKeypad.updatedKeyButtons()
     }
     
     

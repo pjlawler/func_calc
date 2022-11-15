@@ -33,7 +33,7 @@ class MoreInfoVC: UITableViewController {
         
         // if user pulls to refresh, this will try to download the latest rates
         model.updateExchangeRates(completed: {
-            if self.model.exchangeRates.downloadStatus == .current {
+            if self.model.exchangeRates.isOverHourOld {
                 DispatchQueue.main.async { self.reloadTableView() }
             }
         })

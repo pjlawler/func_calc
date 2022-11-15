@@ -24,7 +24,7 @@ struct RateData: Codable {
         return downloadStatus != .current
     }
     
-    var downloadStatus: Status {
+    private var downloadStatus: Status {
         
         guard rates != nil && rates!.count > 0 else { return Status.empty }
         switch secondsSinceDownload {
@@ -36,6 +36,9 @@ struct RateData: Codable {
     }
     
     var alertMessage: String {
+        
+        // sets an alert message based on the download status of the exchange rates
+        
         
         var timeFrame = ""
         

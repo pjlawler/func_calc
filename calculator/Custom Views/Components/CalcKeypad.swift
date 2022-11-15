@@ -13,11 +13,11 @@ protocol FCKeyboardDelegate {
 }
 
 class CalcKeypad {
-
+    
     let keypadStack = FCStackView(stackAxis: .vertical, alignment: .fill, distribution: .fillEqually, padding: 2.0)
     let model = CalculatorModel.shared
     var keypadDelegate: FCKeyboardDelegate!
-        
+    
     init() {
         configure()
     }
@@ -27,11 +27,11 @@ class CalcKeypad {
     }
     
     private func configure() {
-    
+        
         let buttonSize: CGFloat = (ScreenSize.height / 2 - 38) / 5
         let buttonLabels = [ "AC", "±", "%", "÷","7","8","9","×","4","5","6","-","1","2","3","+",":","0",".","="]
         var buttonCount = 10
-       
+        
         // creates the rows for the the keypad
         for _ in 1...5 {
             
@@ -57,18 +57,23 @@ class CalcKeypad {
         
         keypadStack.translatesAutoresizingMaskIntoConstraints = false
     }
-   
-    private func updateHighlighted(button: CalcButton) {
+    
+    private func toggleHighlights() {
+        let oper = model.operationRegister
+        let mode = model.mode
+        
         for tag in [13, 17, 21, 25] {
-            let updateButton = keypadStack.viewWithTag(tag) as! CalcButton
-            if button.tag != tag { updateButton.unhighlight() } else { updateButton.highlight() }
+            let button = keypadStack.viewWithTag(tag) as! CalcButton
+            if button.titleLabel?.text == oper && mode == .awaiting_second { button.highlight() } else { button.unhighlight() }
         }
     }
     
-   func updateButtonTitles() {
-       
-      let equalsButton = keypadStack.viewWithTag(29) as! CalcButton
-      let clearButton = keypadStack.viewWithTag(10) as! CalcButton
+    func updatedKeyButtons() {
+        
+        let equalsButton = keypadStack.viewWithTag(29) as! CalcButton
+        let clearButton = keypadStack.viewWithTag(10) as! CalcButton
+        
+        toggleHighlights()
         
         switch model.mode {
             
@@ -79,7 +84,7 @@ class CalcKeypad {
         case .function_operation:
             clearButton.updateTitle(title: "C")
             equalsButton.updateTitle(title: "ENT")
-        
+            
         case .function_complete:
             clearButton.updateTitle(title: "AC")
             equalsButton.updateTitle(title: "USE")
@@ -93,7 +98,6 @@ class CalcKeypad {
     
     @objc private func keypadButtonTapped(_ sender: CalcButton) {
         sender.flash()
-        updateHighlighted(button: sender)
         keypadDelegate.keyboardTapped(button: sender)
     }
     

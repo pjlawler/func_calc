@@ -26,8 +26,7 @@ struct NetworkManager {
         
         
         let endpoint = baseURL + "\(baseCurrency)"
-        print("network: base \(baseCurrency)")
-        
+    
         // verifies it's a good URL
         guard let url = URL(string: endpoint) else {
             completed(.failure(.badURL))

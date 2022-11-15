@@ -43,19 +43,22 @@ class CalculatorDisplay: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         layer.cornerRadius = 10
         clipsToBounds = false
+        
+        
         main.backgroundColor = .clear
         main.textColor = .white
         main.textAlignment = .right
         main.numberOfLines = 1
         main.font = Fonts.mainDisplayText
         main.minimumScaleFactor = 0.5
+        main.lineBreakMode = .byTruncatingMiddle
         main.adjustsFontSizeToFitWidth = true
         main.text = "0"
         aux.backgroundColor = .clear
         aux.textColor = .white
         aux.textAlignment = .left
         aux.numberOfLines = 3
-        aux.minimumScaleFactor = 0.8
+        aux.minimumScaleFactor = 0.7
         aux.font = Fonts.auxDisplayText
         aux.text = ""
         
