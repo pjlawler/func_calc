@@ -37,8 +37,7 @@ class MoreInfoCell: UITableViewCell {
         detailLabel.textColor = .link
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        addSubview(itemLabel)
-        addSubview(detailLabel)
+        addSubviews(itemLabel, detailLabel)
         
         NSLayoutConstraint.activate([
             itemLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),

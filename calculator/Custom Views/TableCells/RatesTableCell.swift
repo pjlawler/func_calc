@@ -57,11 +57,8 @@ class RatesTableCell: UITableViewCell {
         let padding: CGFloat            = 10
         countryCodeLabel.numberOfLines = 1
         currentRateLabel.numberOfLines = 1
-
-        contentView.addSubview(countryNameLabel)
-        contentView.addSubview(countryCodeLabel)
-        contentView.addSubview(currentRateLabel)
-        contentView.addSubview(button)
+        
+        contentView.addSubviews(countryNameLabel, countryCodeLabel, currentRateLabel, button)
         
         NSLayoutConstraint.activate([
             

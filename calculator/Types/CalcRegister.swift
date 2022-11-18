@@ -27,7 +27,7 @@ struct CalcRegister {
         return (data?.contains(".") == true || data?.contains(":") == true)
     }
     
-    var decimalValue: Double {
+    var decimalValueAfterFunctionResult: Double {
         
         guard let _ = data else { return 0.0 }
         
@@ -44,10 +44,22 @@ struct CalcRegister {
         if !isDisplayingTime {
            return (tempData as NSString).doubleValue
         }
-        
-        // if it is time, it converts it to a double and returns
         else {
             return Utilities().timeToDecimal(tempData)
+        }
+}
+    
+    
+    var decimalValue: Double {
+        
+        guard let _ = data else { return 0.0 }
+        
+        // returns the value if it's not time
+        if !isDisplayingTime {
+           return (data! as NSString).doubleValue
+        }
+        else {
+            return Utilities().timeToDecimal(data!)
         }
     }
     

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 enum Functions {
     
     static let formulas: [FormulaUnit] = [
@@ -84,7 +85,7 @@ enum Functions {
         ConversionUnit(title: "Kilometer per Hour", multiplier: 0.2777777778, category: Categories.velocity, symbol: "kmh", favorite: nil, answerPrefix: nil, answerSuffix: " kmh"),
         ConversionUnit(title: "Mile per Second", multiplier: 1609.344, category: Categories.velocity, symbol: "mi/s", favorite: nil, answerPrefix: nil, answerSuffix: " mi/s"),
         ConversionUnit(title: "Mile per Hour", multiplier: 0.44704, category: Categories.velocity, symbol: "mph", favorite: nil, answerPrefix: nil, answerSuffix: " mph"),
-        ConversionUnit(title: "Mile per Minute", multiplier: 26.8224, category: Categories.velocity, symbol: "mph", favorite: nil, answerPrefix: nil, answerSuffix: " mi/m"),
+        ConversionUnit(title: "Mile per Minute", multiplier: 26.8224, category: Categories.velocity, symbol: "mi/m", favorite: nil, answerPrefix: nil, answerSuffix: " mi/m"),
         ConversionUnit(title: "Meter per Second", multiplier: 1.0, category: Categories.velocity, symbol: "m/s", favorite: nil, answerPrefix: nil, answerSuffix: " m/s"),
         ConversionUnit(title: "Nautical Mile per Hour", multiplier: 0.5144444444, category: Categories.velocity, symbol: "kt", favorite: nil, answerPrefix: nil, answerSuffix: " kt"),
         ConversionUnit(title: "Mach", multiplier: 295.0464, category: Categories.velocity, symbol: "M", favorite: nil, answerPrefix: nil, answerSuffix: " M"),
@@ -159,5 +160,73 @@ enum Functions {
         ConversionUnit(title: "Pound-Force", multiplier: 4.4482216153, category: Categories.force, symbol: "lbf", favorite: nil, answerPrefix: nil, answerSuffix: " lbf"),
         ConversionUnit(title: "Ounce-Force", multiplier: 0.278013851, category: Categories.force, symbol: "ozf", favorite: nil, answerPrefix: nil, answerSuffix: " ozf")
     ]
+    
+    static var conversionList: [[FunctionData]] {
+        
+        let conversions = Functions.conversions
+        var list:[[FunctionData]] = [[]]
+        
+        for (index, conversion) in conversions.enumerated() {
+
+            // if the very first conversion, then
+            if index == 0 {
+                var group:[FunctionData] = []
+                group.append(FunctionData(category: conversion.category!, title: conversion.title!, symbol: conversion.symbol!))
+                list[0] = group
+            }
+            else {
+                
+                var createNewSection = true
+                
+                for (index, section) in list.enumerated() {
+                    if !section.isEmpty && section[0].category == conversion.category {
+                        list[index].append(FunctionData(category: conversion.category!, title: conversion.title!, symbol: conversion.symbol!))
+                        createNewSection = false
+                    }
+                }
+                if createNewSection {
+                    var group:[FunctionData] = []
+                    group.append(FunctionData(category: conversion.category!, title: conversion.title!, symbol: conversion.symbol!))
+                    list.append(group)
+                }
+            }
+        }
+        
+        return list
+    }
+    
+    static var formulaList: [[FunctionData]] {
+        
+        let formulas = Functions.formulas
+        var list:[[FunctionData]] = [[]]
+        
+        for (index, formula) in formulas.enumerated() {
+
+            // if the very first formula, then
+            if index == 0 {
+                var group:[FunctionData] = []
+                group.append(FunctionData(category: formula.category!, title: formula.title!, symbol: formula.symbol!))
+                list[0] = group
+            }
+            else {
+                
+                var createNewSection = true
+                
+                for (index, section) in list.enumerated() {
+                    if !section.isEmpty && section[0].category == formula.category {
+                        list[index].append(FunctionData(category: formula.category!, title: formula.title!, symbol: formula.symbol!))
+                        createNewSection = false
+                    }
+                }
+                if createNewSection {
+                    var group:[FunctionData] = []
+                    group.append(FunctionData(category: formula.category!, title: formula.title!, symbol: formula.symbol!))
+                    list.append(group)
+                }
+            }
+        }
+        
+        return list
+    }
 
 }

@@ -243,10 +243,7 @@ extension CurrentRatesVC {
         table.translatesAutoresizingMaskIntoConstraints = false
         
         // adds the views to the VC's view
-        view.addSubview(segmentTitleLabel)
-        view.addSubview(segment)
-        view.addSubview(searchBar)
-        view.addSubview(table)
+        view.addSubviews(segmentTitleLabel, segment, searchBar, table)
         
         NSLayoutConstraint.activate([
             segmentTitleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: padding),

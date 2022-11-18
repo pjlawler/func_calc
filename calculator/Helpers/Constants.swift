@@ -47,6 +47,11 @@ struct Fonts {
     static let mainDisplayText      = UIFont.systemFont(ofSize: 95, weight: .thin)
     static let auxDisplayText       = UIFont.systemFont(ofSize: 24, weight: .regular)
     static let copyRightDisplayText = UIFont.systemFont(ofSize: 17, weight: .regular)
+    static let fucntionButtonEnabled   = UIFont.systemFont(ofSize: 14, weight: .bold)
+    static let fucntionButtonDisabled  = UIFont.systemFont(ofSize: 14, weight: .light)
+    static let functionListCellTitle = UIFont.systemFont(ofSize: 14, weight: .regular)
+    static let functionListCellSymbol = UIFont.systemFont(ofSize: 14, weight: .bold)
+    
     static let currencyCodeText     = UIFont.systemFont(ofSize: 17, weight: .bold)
     static let currencyNameText     = UIFont.systemFont(ofSize: 17, weight: .bold)
     static let currencyRate         = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -55,7 +60,6 @@ struct Fonts {
     static let sectionItemText      = UIFont.systemFont(ofSize: 17, weight: .regular)
     static let infoBoxTitle         = UIFont.systemFont(ofSize: 17, weight: .bold)
     static let infoBoxText          = UIFont.systemFont(ofSize: 17, weight: .regular)
-    static let functionButtonText   = UIFont.systemFont(ofSize: 14, weight: .bold)
     static let functionDisplay      = UIFont.systemFont(ofSize: 30, weight: .light)
     static let alertInfoBoxText     = UIFont.systemFont(ofSize: 17, weight: .regular)
     static let alertInfBoxTitle     = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -115,10 +119,15 @@ struct ImageSymbols {
     static let arrowRight           = UIImage(systemName: "arrowtriangle.right.fill")
     static let arrowDown            = UIImage(systemName: "arrowtriangle.down.fill")
     static let arrowupdown          = UIImage(systemName: "arrow.up.arrow.down")
+    static let store = UIImage(systemName: "square.and.arrow.down")
+    static let clear = UIImage(systemName: "clear")
     static let alertExclamation     = UIImage(systemName: "exclamationmark.circle", withConfiguration: UIImage.SymbolConfiguration(textStyle: .body))
     static let favoriteStar         = UIImage(systemName: "star", withConfiguration: UIImage.SymbolConfiguration(textStyle: .title2))
     static let favoriteStarFill     = UIImage(systemName: "star.fill", withConfiguration: UIImage.SymbolConfiguration(textStyle: .title2))
     static let hourglass            = UIImage(systemName: "hourglass")
+    
+    
+    
 }
 
 

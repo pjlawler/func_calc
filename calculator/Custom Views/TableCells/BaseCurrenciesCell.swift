@@ -26,7 +26,7 @@ class BaseCurrenciesCell: UITableViewCell {
         backgroundColor = .tertiarySystemBackground
         selectionStyle = .none
         
-        addSubview(itemLabel)
+        addSubviews(itemLabel)
 
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
  

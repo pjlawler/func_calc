@@ -13,7 +13,7 @@ import Foundation
 struct FormulaUnit {
     let title: String?
     let formula: String?
-    let category: String!
+    let category: String?
     let symbol: String?
     let inputCues: [String]?
     let favorite: Bool?

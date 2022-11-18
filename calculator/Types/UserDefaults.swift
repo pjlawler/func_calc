@@ -28,6 +28,18 @@ struct DefaultData: Codable {
         guard errorWarningTimeStamp != nil else { return 0 }
         return (Int(Date().timeIntervalSince1970) - errorWarningTimeStamp!) / 3600
     }
+    
+    var showingFavoritesWithNoneSelected: Bool {
+        
+        guard showingFavorites != nil else { return false }
+        
+        if showingFavorites == false { return false }
+        
+        guard favorites != nil else { return true }
+        
+        return favorites!.count == 0
+        
+    }
 }
 
 

@@ -8,7 +8,8 @@
 import UIKit
 
 protocol FCFucntionKeysDelegate {
-    func functionKeyTapped(button: FuncButton)
+    func functionButtonTapped(button: FuncButton)
+    func functionButtonLongPressed(button: FuncButton)
 }
 
 class FuncKeypad {
@@ -39,6 +40,9 @@ class FuncKeypad {
             for _ in 1...4 {
                 let button = FuncButton(size: buttonSize)
                 button.addTarget(self, action: #selector(functionButtonTapped(_:)), for: .touchUpInside)
+                // adds a long press recognizer to the : button
+                let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(functionButtonLongPressed(_:)))
+                button.addGestureRecognizer(longPressGesture)
                 button.tag = buttonCount
                 rowStack.addArrangedSubview(button)
                 buttonCount += 1
@@ -50,6 +54,15 @@ class FuncKeypad {
         }
     }
     
+    func isEnabled(_ enabled: Bool) {
+        
+        for tag in 100...107 {
+            let button = functionStack.viewWithTag(tag) as! FuncButton
+            button.isEnabled = enabled
+            button.titleLabel?.font = enabled ? Fonts.fucntionButtonEnabled : Fonts.fucntionButtonDisabled
+        }
+    }
+        
     func updateTitleLabels() {
         
         for tag in 100...107 {
@@ -74,6 +87,17 @@ class FuncKeypad {
     
     @objc private func functionButtonTapped(_ sender: FuncButton) {
         sender.flash()
-        functionKeyDelegate.functionKeyTapped(button: sender)
+        functionKeyDelegate.functionButtonTapped(button: sender)
+    }
+    
+    @objc private func functionButtonLongPressed(_ sender: UIGestureRecognizer) {
+        
+        guard let tag = sender.view?.tag else { return }
+        
+        if sender.state == .began  {
+            guard let button = functionStack.viewWithTag(tag) as? FuncButton else { return }
+            functionKeyDelegate.functionButtonLongPressed(button: button)
+        }
+       
     }
 }

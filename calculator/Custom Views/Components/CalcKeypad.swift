@@ -101,7 +101,7 @@ class CalcKeypad {
         keypadDelegate.keyboardTapped(button: sender)
     }
     
-    @objc private func timeButtonLongPressed(_ sender: UILongPressGestureRecognizer) {
+    @objc private func timeButtonLongPressed(_ sender: UIGestureRecognizer) {
         if sender.state == .began { keypadDelegate.colonKeyLongPressed() }
     }
 }

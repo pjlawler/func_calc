@@ -133,7 +133,7 @@ class CalculatorModel {
         // use is available when the calculator is displaying a function result
         
         // temporarily stores the function's result decimal value
-        let functionResult = displayRegister.decimalValue
+        let functionResult = displayRegister.decimalValueAfterFunctionResult
         
         // clears all and sets the display with the decimal value of the function result
         clearAll()
@@ -209,7 +209,8 @@ class CalculatorModel {
             operationRegister = oper
             
         case .function_complete:
-            let formulaResult = displayRegister.decimalValue
+                        
+            let formulaResult = displayRegister.decimalValueAfterFunctionResult
             clearAll()
             setDisplayRegister(data: formulaResult)
             mathRegister.data = displayRegister.data
@@ -339,10 +340,10 @@ class CalculatorModel {
         }
         
         // sets up to format the registers for the aux display
-        let math = mathRegister.displayFormatted
-        let display = displayRegister.displayFormatted
-        if calculationList.count == 0 { calculationList = "\(math) \(operationRegister ?? "?") \(display)" }
-        else { calculationList = calculationList + " \(operationRegister ?? "?") \(display)" }
+        let math = mathRegister.formattedDecimal
+        let display = displayRegister.formattedDecimal
+        if calculationList.count == 0 { calculationList = "\(math) \(operationRegister!) \(display)" }
+        else { calculationList = calculationList + " \(operationRegister!) \(display)" }
         auxDisplay = calculationList
         
         // sets the display register to display time if either of the registers were formatted as time
@@ -515,6 +516,10 @@ extension CalculatorModel {
     
     
     func storeUserDefaults() {
+        
+        // ensures showingfavorites is only selected if there are favorites in the array
+        if userDefaults.showingFavoritesWithNoneSelected { userDefaults.showingFavorites = false }
+        
         if storage.saveDefaultData(userDefaults) {
             print("user defaults have been saved in local storage")
         }
@@ -527,10 +532,8 @@ extension CalculatorModel {
     
     func functionOperationSelected(for selectedFunction: String) {
         
-        // determines how to handle the function to be performed
-        
-        // sets the variable of the symbol of the function to perform
-        functionToPerform = selectedFunction
+        if functionToPerform == nil { functionToPerform = selectedFunction }
+        else { guard functionToPerform == selectedFunction else {return }}
         
         // determines if it's a conversion or a formula
         

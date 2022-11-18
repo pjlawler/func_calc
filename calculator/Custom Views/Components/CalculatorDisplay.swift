@@ -62,8 +62,7 @@ class CalculatorDisplay: UIView {
         aux.font = Fonts.auxDisplayText
         aux.text = ""
         
-        addSubview(main)
-        addSubview(aux)
+        addSubviews(main, aux)
         
         main.translatesAutoresizingMaskIntoConstraints = false
         aux.translatesAutoresizingMaskIntoConstraints = false

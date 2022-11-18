@@ -15,25 +15,21 @@ class MainScreenVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
-        // loads the data from user defaults and gets the latest exchange rates
-        model.initialDataLoad { showWarning in
-            if showWarning {
-                // shows warning once in a 24-hour period if the data isn't current
-                self.presentAlertOnMainThread(title: "Network Problem", message: self.model.exchangeRates.alertMessage)
-            }
-        }
-        
-        model.userDefaults.funcButton_8 = "MORT"
-        model.storeUserDefaults()
-
-                
+        loadData()
         configureViewController()
         configureNavbar()
         configureComponents()
         funcKeypad.updateTitleLabels()
+    }
+
+    func loadData() {
+        // loads the data from user defaults and gets the latest exchange rates
+        model.initialDataLoad { showWarning in
+            if showWarning {
+                // shows warning once in a 24-hour period if the data aren't current
+                self.presentAlertOnMainThread(title: "Network Problem", message: self.model.exchangeRates.alertMessage)
+            }
+        }
     }
     
     
@@ -63,10 +59,8 @@ class MainScreenVC: UIViewController {
         let keypadStack = calcKeypad.keypadStack
         
         // lays out the keypad, fuction keys and main display on the view
-        view.addSubview(display)
-        view.addSubview(functionStack)
-        view.addSubview(keypadStack)
-        
+        view.addSubviews(display, functionStack, keypadStack)
+
         NSLayoutConstraint.activate([
             display.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 20),
             display.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
@@ -83,7 +77,7 @@ class MainScreenVC: UIViewController {
     
     
     @objc func navbarFunctionsTapped() {
-        
+        pushFunctionSelectorVC()
     }
     
     
@@ -91,40 +85,43 @@ class MainScreenVC: UIViewController {
         let moreInfoVC = MoreInfoVC()
         navigationController?.pushViewController(moreInfoVC, animated: true)
     }
+    
+    func pushFunctionSelectorVC() {
+        let functionsVC = FunctionSelectorVC()
+        let navigationController = UINavigationController(rootViewController: functionsVC)
+        present(navigationController, animated: true)
+    }
 }
 
 extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDelegate  {
-    
-    // required protocol functions from the components
-    
+       
     func displaySwippedRight() {
-        
-        // called when the user gestures on the main display
-        
         model.backspace()
         display.updateDisplay()
         calcKeypad.updatedKeyButtons()
     }
     
     
-    func functionKeyTapped(button: FuncButton) {
-        
+    func functionButtonTapped(button: FuncButton) {
         guard button.titleLabel?.text != nil else { return }
-        
         model.functionOperationSelected(for: button.titleLabel!.text!)
         display.updateDisplay()
         calcKeypad.updatedKeyButtons()
+        funcKeypad.isEnabled(model.functionToPerform == nil)
     }
     
     
+    func functionButtonLongPressed(button: FuncButton) {
+        pushFunctionSelectorVC()
+    }
+        
+    
     func keyboardTapped(button: CalcButton) {
-        
-        // called when any keypad button is tapped
-        
         guard let buttonText = button.titleLabel?.text else { return }
         model.keypadHandler(key: buttonText)
         display.updateDisplay()
         calcKeypad.updatedKeyButtons()
+        funcKeypad.isEnabled(model.functionToPerform == nil)
     }
     
     

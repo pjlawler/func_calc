@@ -48,7 +48,7 @@ extension UserInstructionsVC: UITextViewDelegate {
         instructionsLabel.backgroundColor = .systemBackground
         instructionsLabel.textColor = .label
    
-        view.addSubview(instructionsLabel)
+        view.addSubviews(instructionsLabel)
     
         instructionsLabel.translatesAutoresizingMaskIntoConstraints = false
 

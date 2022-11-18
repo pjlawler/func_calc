@@ -27,7 +27,7 @@ class FuncButton: UIButton {
         
         // styles button
         setTitleColor(.label, for: .normal)
-        titleLabel?.font = Fonts.functionButtonText
+        titleLabel?.font = Fonts.fucntionButtonEnabled
         layer.borderWidth = 1.0
         layer.borderColor = UIColor.systemGray.cgColor
         layer.cornerRadius = size / 6

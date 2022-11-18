@@ -133,8 +133,7 @@ extension MoreInfoVC {
         ratesStatusLabel.textAlignment = .center
         ratesStatusLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        tableFooter.addSubview(ratesStatusLabel)
-        tableFooter.addSubview(copyrightLabel)
+        tableFooter.addSubviews(ratesStatusLabel, copyrightLabel)
         
         NSLayoutConstraint.activate([
             ratesStatusLabel.topAnchor.constraint(equalTo: tableFooter.topAnchor, constant: 10),
