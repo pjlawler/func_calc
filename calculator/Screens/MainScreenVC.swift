@@ -21,7 +21,9 @@ class MainScreenVC: UIViewController {
         configureComponents()
         funcKeypad.updateTitleLabels()
     }
-
+    
+    
+    
     func loadData() {
         // loads the data from user defaults and gets the latest exchange rates
         model.initialDataLoad { showWarning in
@@ -38,6 +40,7 @@ class MainScreenVC: UIViewController {
         calcKeypad.keypadDelegate = self
         funcKeypad.functionKeyDelegate = self
         display.displayDelegate = self
+       
     }
     
     
@@ -77,19 +80,26 @@ class MainScreenVC: UIViewController {
     
     
     @objc func navbarFunctionsTapped() {
-        pushFunctionSelectorVC()
+        pushFunctionSelectorVC ()
     }
     
     
     @objc func navbarMoreInfoTapped() {
         let moreInfoVC = MoreInfoVC()
+        moreInfoVC.moreInfoDelegate = self
         navigationController?.pushViewController(moreInfoVC, animated: true)
     }
     
-    func pushFunctionSelectorVC() {
+    func pushFunctionSelectorVC(tag: Int? = nil) {
         let functionsVC = FunctionSelectorVC()
         let navigationController = UINavigationController(rootViewController: functionsVC)
+        if let _ = tag { functionsVC.fromPresetTag = tag }
+        functionsVC.functionSelectorDelegate = self
         present(navigationController, animated: true)
+    }
+    
+    func updateFunctionButtonLable() {
+        funcKeypad.updateTitleLabels()
     }
 }
 
@@ -112,9 +122,29 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
     
     
     func functionButtonLongPressed(button: FuncButton) {
-        pushFunctionSelectorVC()
-    }
         
+        // if preset button is empty, then pushes the function selector vc
+        
+        if (button.titleLabel?.text ?? "" ) == "" { pushFunctionSelectorVC(tag: button.tag) }
+        
+        else {
+            
+            // if not empty displays an alert sheet
+            
+            let alert = UIAlertController(title: "Function Preset Button Action", message: "What would you like to do with this preset button?", preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "Change the Preset", style: .default, handler: { [self] _ in pushFunctionSelectorVC(tag: button.tag)}))
+            alert.addAction(UIAlertAction(title: "Clear the Preset", style: .default, handler: { [self] _ in clearPreset(tag: button.tag)}))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in print("add") }))
+            
+            present(alert, animated: true)
+        }
+    }
+    
+    func clearPreset(tag: Int) {
+        model.userDefaults.functionButtons[tag - 100] = ""
+        model.storeUserDefaults()
+        funcKeypad.updateTitleLabels()
+    }
     
     func keyboardTapped(button: CalcButton) {
         guard let buttonText = button.titleLabel?.text else { return }
@@ -130,3 +160,28 @@ extension MainScreenVC: FCKeyboardDelegate, FCFucntionKeysDelegate, FCDisplayDel
         display.updateDisplay()
     }
 }
+
+extension MainScreenVC: FunctionSelectorDelegate {
+    func updateButtonTitles() {
+        funcKeypad.updateTitleLabels()
+    }
+    
+    func executeFunction(function: String) {
+        model.functionOperationSelected(for: function)
+        display.updateDisplay()
+        calcKeypad.updatedKeyButtons()
+        funcKeypad.isEnabled(model.functionToPerform == nil)
+    }
+}
+
+extension MainScreenVC: MoreInfoDelegate {
+    
+    func clearAllPresets() {
+        for (index, _) in model.userDefaults.functionButtons.enumerated() {
+            model.userDefaults.functionButtons[index] = ""
+        }
+        model.storeUserDefaults()
+        funcKeypad.updateTitleLabels()
+    }
+}
+

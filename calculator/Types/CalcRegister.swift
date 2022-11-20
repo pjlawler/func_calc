@@ -86,7 +86,7 @@ struct CalcRegister {
         guard let _ = data else { return "0" }
         
         let useScientific = abs(decimalValue) > 9999999999.99
-        let showDecimal = data!.contains(".") && !useScientific
+        var showDecimal = false
         var significantDigits = 1
         var trailingZeros = ""
         let formatter =  NumberFormatter()
@@ -115,8 +115,11 @@ struct CalcRegister {
                 // creates a string of trailing zeros to add to the display
                 trailingZeros = String(repeating: "0", count: count)
             }
+            
+            // will show decimal if the . was just added or there are trailing zeros after the .
+            showDecimal = data!.suffix(1) == "." || trailingZeros.count > 0
         }
-    
+        
         formatter.numberStyle = useScientific ? .scientific : .decimal
         formatter.exponentSymbol = "e"
         formatter.groupingSeparator = ","

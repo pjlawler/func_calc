@@ -173,8 +173,10 @@ class CalculatorModel {
         // ensures that display is a non-zero number
         if displayRegister.data == nil || displayRegister.data == "0" { return }
         
+        let displayAsTime = displayRegister.isDisplayingTime
+        
         let result: Double = displayRegister.decimalValue * -1
-        setDisplayRegister(data: result)
+        setDisplayRegister(data: result, asTime: displayAsTime)
     }
     
     
@@ -340,8 +342,8 @@ class CalculatorModel {
         }
         
         // sets up to format the registers for the aux display
-        let math = mathRegister.formattedDecimal
-        let display = displayRegister.formattedDecimal
+        let math = mathRegister.displayFormatted
+        let display = displayRegister.displayFormatted
         if calculationList.count == 0 { calculationList = "\(math) \(operationRegister!) \(display)" }
         else { calculationList = calculationList + " \(operationRegister!) \(display)" }
         auxDisplay = calculationList
@@ -724,8 +726,9 @@ extension CalculatorModel {
                     let multiplier = exchangeRates.rates?[String(item)] ?? 0.0
                     let category = Categories.currency
                     let symbol = String(item)
-                    let answerPrefix = String(CountryData.currencySymbols[String(item)] ?? Character(""))
-                    let answerSuffix = String(item)
+                    let currecySymbol =  CountryData.currencySymbols[String(item)] ?? nil
+                    let answerPrefix = currecySymbol != nil ? String(currecySymbol!) : ""
+                    let answerSuffix = " \(item)"
                     
                     conversionUnits.append(ConversionUnit(title: title, multiplier: multiplier, category: category, symbol: symbol, favorite: nil, answerPrefix: answerPrefix, answerSuffix: answerSuffix))
                 }

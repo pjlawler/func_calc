@@ -53,18 +53,22 @@ struct Utilities {
             hours = Double(Int(timeParts[0])!)
             minutes = Double(Int(timeParts[1])!) / 60
         }
-        
-        return hours + minutes
+
+        let isNegative = hours < 0 ? true : false
+        let result = abs(hours) + abs(minutes)
+
+        return isNegative ? result * -1 : result
     }
     
     func doubleToTime(_ number: Double) -> String {
         
         let hours = String(Int(number))
-        var minutes = String(Int(((number - Double(Int(number))) * 60).rounded()))
+        var minutes = String(Int(((abs(number) - Double(Int(abs(number)))) * 60).rounded()))
         if minutes.count < 2 { minutes = "0" + minutes}
         
         return "\(hours):\(minutes)"
     }
+    
     
     func formatDecimalNumber(number: Double, as type: DisplayAs ) -> String {
 
@@ -159,6 +163,24 @@ struct Utilities {
             return 0.0
         
         }
+    }
+    
+    func functionTitle(symbol: String) -> String? {
+        
+        let title: String!
+        
+        if CountryData.currencyName.contains(where: {$0.key == symbol }) {
+            title = CountryData.currencyName[symbol]
+        }
+        else if Functions.conversions.contains(where: {$0.symbol == symbol }) {
+            title = Functions.conversions.first(where: {$0.symbol == symbol})?.title
+        }
+        else if Functions.formulas.contains(where: { $0.symbol == symbol }) {
+            title = Functions.formulas.first(where: {$0.symbol == symbol})?.title
+        }
+        else { return nil }
+        
+        return title ?? "title not found"
     }
 }
 

@@ -7,21 +7,27 @@
 
 import UIKit
 
+protocol MoreInfoDelegate {
+    func clearAllPresets()
+}
+
+
 class MoreInfoVC: UITableViewController {
     
-    let tableData: [String] = ["Instructions", "Base Exchange Currency","Current Exchange Rates"]
+    let tableData: [String] = ["Instructions", "Erase All Presets", "Base Exchange Currency","Current Exchange Rates"]
     let tableFooter = UIView(frame: .zero)
     let copyrightLabel = CopyrightLabel()
     let ratesStatusLabel = UILabel(frame: .zero)
     let cellID = "cellID"
-    
     let model = CalculatorModel.shared
     
+    var moreInfoDelegate: MoreInfoDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        configureTable()
+        configureComponents()
+        layoutViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,15 +38,16 @@ class MoreInfoVC: UITableViewController {
     @objc func pullRefresh() {
         
         // if user pulls to refresh, this will try to download the latest rates
-        model.updateExchangeRates(completed: {
-            if self.model.exchangeRates.isOverHourOld {
+        
+        if model.exchangeRates.isOverHourOld {
+            model.updateExchangeRates(completed: {
                 DispatchQueue.main.async { self.reloadTableView() }
-            }
-        })
+            })
+        }
+        
         refreshControl?.endRefreshing()
     }
-    
-    
+        
     func reloadTableView() {
         
         // refreshes the table, and ratesStatus label to show updated base currency and/or rate download status
@@ -53,7 +60,7 @@ class MoreInfoVC: UITableViewController {
     
     func pushBaseCurrenciesVC() {
         
-        // pushes the vc to show the table with the list of countries, allows user to choose a new base currency
+        // pushes the vc that shows the table with the list of countries, allows user to choose a new base currency
         
         let baseCurrenciesVC = BaseCurrenciesVC()
         navigationController?.pushViewController(baseCurrenciesVC, animated: true)
@@ -82,9 +89,9 @@ class MoreInfoVC: UITableViewController {
 
 // MARK: - TableView Protocol Functions
 
+
 extension MoreInfoVC {
-    
-    
+        
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { tableData.count }
     
     
@@ -99,7 +106,20 @@ extension MoreInfoVC {
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 1 { pushBaseCurrenciesVC() }
+        if indexPath.row == 2 { pushBaseCurrenciesVC() }
+        else if indexPath.row == 1 {
+            let alert = UIAlertController(title: "Erase All Presets", message: "Are you sure?", preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Erase", style: .default, handler: { [self] _ in
+                moreInfoDelegate?.clearAllPresets()
+            }))
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                return
+            }))
+            
+            present(alert, animated: true)
+        }
     }
     
     
@@ -109,18 +129,22 @@ extension MoreInfoVC {
         
         switch indexPath.row {
         case 0: presentInstructionsVC()
-        case 2: presentRatesVC()
+        case 3: presentRatesVC()
         default: return
         }
     }
 }
 
 // MARK: - Configure View
+
 extension MoreInfoVC {
-    
-    
+   
     func configureView() {
         title = "Calculator Info"
+    }
+    
+    
+    func configureComponents() {
         
         // sets the pull to refresh action
         refreshControl = UIRefreshControl()
@@ -133,6 +157,13 @@ extension MoreInfoVC {
         ratesStatusLabel.textAlignment = .center
         ratesStatusLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        // configures table view
+        tableView.tableFooterView = tableFooter
+        tableView.register(MoreInfoCell.self, forCellReuseIdentifier: cellID)
+    }
+    
+    func layoutViews() {
+        
         tableFooter.addSubviews(ratesStatusLabel, copyrightLabel)
         
         NSLayoutConstraint.activate([
@@ -143,11 +174,5 @@ extension MoreInfoVC {
             copyrightLabel.leadingAnchor.constraint(equalTo: tableFooter.leadingAnchor, constant: 10),
             copyrightLabel.trailingAnchor.constraint(equalTo: tableFooter.trailingAnchor, constant: -10)
         ])
-    }
-    
-    
-    func configureTable() {
-        tableView.tableFooterView = tableFooter
-        tableView.register(MoreInfoCell.self, forCellReuseIdentifier: cellID)
     }
 }

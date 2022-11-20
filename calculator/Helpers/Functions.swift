@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Functions {
+struct Functions {
     
     static let formulas: [FormulaUnit] = [
         FormulaUnit(title: "Monthly Loan Payment", formula: "(?a*(?c/12))/(1-((1+(?c/12))**(?b*-1)))", category: Categories.financial, symbol: "PMT", inputCues: ["Amount to be borrowed?", "Length of Loan (Months)?", "Interest Rate APR (i.e. 0.065)?"], favorite: nil, answerPrefix: "The payment for that loan amount, length and APR will be", answerSuffix: "/mo"),
@@ -38,8 +38,7 @@ enum Functions {
         FormulaUnit(title: "MACH Number", formula: "?a / (643.855 * ((?b + 273.15) / 273.15)**0.5)", category: Categories.aviation, symbol: "MACH#", inputCues: ["TAS (kt)?","Temperature (\(Symbols.celsius))?"], favorite: nil, answerPrefix: nil, answerSuffix: " Mach"),
         FormulaUnit(title: "Crosswind", formula: "abs(function((360 - ?a * 10) - (360 - ?b), 'sinus') * ?c)", category: Categories.aviation, symbol: "XWIND", inputCues: ["Runway Number?", "Wind Direction (ie 40)?", "Wind Speed (kts)"], favorite: nil, answerPrefix: nil, answerSuffix: " kt")
     ]
-    
-    
+        
     static let conversions: [ConversionUnit] = [
         ConversionUnit(title: "Centimeter", multiplier: 0.01, category: Categories.length, symbol: "cm", favorite: nil, answerPrefix: nil, answerSuffix: " cm"),
         ConversionUnit(title: "Decimeter", multiplier: 0.1, category: Categories.length, symbol: "dm", favorite: nil, answerPrefix: nil, answerSuffix: " dm"),

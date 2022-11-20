@@ -47,8 +47,7 @@ class MoreInfoCell: UITableViewCell {
         ])
     }
     
-    
-    func set(data: [String], row: Int) {
+     func set(data: [String], row: Int) {
         
         var detailText: String?
         var symbol: AccessoryType?
@@ -57,12 +56,14 @@ class MoreInfoCell: UITableViewCell {
         case 0:
             symbol                  = AccessoryType.detailButton
         case 1:
+            detailText = "⌫"
+        case 2:
             detailText              = model.userDefaults.baseCurrency
             symbol                  = AccessoryType.disclosureIndicator
-        case 2:
+        case 3:
             symbol                  = AccessoryType.detailButton
            
-        case 3:
+        case 4:
             symbol                  = AccessoryType.disclosureIndicator
         default:
             break

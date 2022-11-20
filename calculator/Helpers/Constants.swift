@@ -118,7 +118,7 @@ struct ImageSymbols {
     static let settingsGear         = UIImage(systemName: "gear")
     static let arrowRight           = UIImage(systemName: "arrowtriangle.right.fill")
     static let arrowDown            = UIImage(systemName: "arrowtriangle.down.fill")
-    static let arrowupdown          = UIImage(systemName: "arrow.up.arrow.down")
+    static let swap          = UIImage(systemName: "arrow.left.arrow.right.square")
     static let store = UIImage(systemName: "square.and.arrow.down")
     static let clear = UIImage(systemName: "clear")
     static let alertExclamation     = UIImage(systemName: "exclamationmark.circle", withConfiguration: UIImage.SymbolConfiguration(textStyle: .body))
