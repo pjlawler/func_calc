@@ -237,7 +237,7 @@ extension FunctionSelectorVC {
         navigationItem.leftBarButtonItem = doneButton
         navigationItem.rightBarButtonItem = executeButton
         
-        executeButton.isHidden = fromPresetTag != nil
+        if #available(iOS 16.0, *) { executeButton.isHidden = fromPresetTag != nil }
     }
     
     
