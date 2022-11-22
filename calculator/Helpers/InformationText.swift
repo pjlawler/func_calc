@@ -39,11 +39,8 @@ struct InformationText {
         fxAttachment.image          = ImageSymbols.functionSym?.withTintColor(.link)
         
         let filledStar              = NSAttributedString(attachment: favAttachment)
-        let functionSym             = NSAttributedString(attachment: fxAttachment)
         
         let favoriteStar            = "[STAR]"
-        let fxSym1                  = "[1stFxSym]"
-        let fxSym2                  = "[2ndFxSym]"
         let hyperLinkText           = "FunctionCalc website"
         let mailToLinkText          = "pat@LawlerInnovationsInc.com"
         let subTitleText            = "Overview of Functions"
@@ -53,7 +50,7 @@ struct InformationText {
         • Thousands of direct conversions for units such as currencies, mass/weights, volumes, temperature etc.
         • Pre-programmed complex mathematical formulas with text prompts, for user-friendly data input
         • Customizable buttons which allow for one-tap access to the built-in formulas and conversions
-        • Up to date currency exchange rates for 171 currencies; including precious metals and cryptocurrencies
+        • Up to date currency exchange rates for more than 165 currencies; including precious metals and cryptocurrencies
         """
         let header1                 = "Time Format"
         let header2                 = "Pre-Loaded Conversions"
@@ -88,28 +85,28 @@ struct InformationText {
             Likewise, a time formatted number may also be used along with a decimal number (i.e. 48:15 x 15). The result will be displayed in time format (from the previous example = 723:45). However, long-pressing the ":" button will convert any number from time to decimal, and vise-versa.
 
         \(header2)
-            There are virtually tens-of-thousands of functions that provide direct unit conversion from categories such as currencies, length/distance, temperature, volume etc. You select a function by tapping the "\(fxSym2)" button as the top of the calculator. A new screen will then show all of the available functions.
+            There are virtually tens-of-thousands of functions that provide direct unit conversion from categories such as currencies, length/distance, temperature, volume etc. You select a function by tapping the "Functions" button as the top of the calculator. A new screen will then show all of the available functions.
             
             Selecting to two units from the same conversion category, will put the calculator into the function mode. If a number has already been entered into the calculator, the conversion will automatically be performed on that number and the result will be displayed. However, if no number has been entered at the time the conversion was selected, the calculator will ask you to input the number that you are converting from. Once that number has been entered, it will then display the converted amount.
         
         \(header3)
-            Additionally, there are numerous pre-programmed formulas available that also accessed by tapping the "\(fxSym1)" button at the top of the calculator.
+            Additionally, there are numerous pre-programmed formulas available that also accessed by tapping the "Functions" button at the top of the calculator.
         
-            Selecting any of the formulas will put the calculator in the function mode.  The calculator will prompt the user to enter the needed variables to provide the result.  For example, if the Monthly Payment Calculation is selected under the Finacial Category, the user will be asked to enter: "Amount to be borrowed?", "Length of Loan (Months)?", "Interest Rate APR (i.e. 0.065)?". After the last input is made, the resultant answer will then be displayed as "Payment X.XX/mo". The result may also be uses in further calculations by pressing "USE" button.
+            Selecting any of the formulas will put the calculator in the function mode.  The calculator will prompt the user to enter the needed variables to provide the result.  For example, if the Monthly Payment Calculation is selected from the Finacial Category, the user will be asked to enter: "Amount to be borrowed?", "Length of Loan (Months)?", "Interest Rate APR (i.e. 0.065)?". After the last input is made, the resultant answer will then be displayed as "Payment X.XX/mo". The result may also be uses in further calculations by pressing "USE" button or any of the math operator keys.
         
         \(aviationDisclaimerText)
         
         \(header4)
-        The currency conversions are especially versatile as the 171 preloaded currencies' exchange rates are updated every hour, so the app always has the most up-to-date exchange rates available while it has Internet connectivity.  If the app does not have access to the Internet, it will continue to perform currency conversions, however, it will use the last downloaded rates.  If the calculator is using older rates, an information box will let the user know the date of the last downloaded rates at the time of the conversion.
+        The currency conversions are especially versatile as the more than 150 preloaded currencies' exchange rates are updated every hour, so the app always has the most up-to-date exchange rates available while it has Internet connectivity.  If the app does not have access to the Internet, it will continue to perform currency conversions, however, it will use the last downloaded rates.  If the calculator is using older rates, an information box will let the user know the date of the last downloaded rates at the time of the conversion.
         
-        The latest rates as compared to the selected base currency can be viewed in the settings menu.
+        The latest rates download status can also be viewed in the “More Stuff” section. Pulling down on the section will attempt to refresh the data as well.
         
-        Specific countries may be "favorited" so only the countries of interest will be viewed when selecting conversions ro viewing their current exchange rates. The displayed countries may be toggled between favorited and all by tapping the \(favoriteStar) button.
+        Specific countries may be "favorited" so only the countries of interest will be viewed when selecting conversions or viewing their current exchange rates. The displayed countries may be toggled between favorited and all by tapping the \(favoriteStar) button.
         
-        The Base Country, which is the country's currency that all of the downloaded rates are referenced, may be changed in the calculator's settings to any one of the 171 countries.
+        The base currency, which is what the downloaded rates are valued, may be changed to any of the downloaded currencies.  This does not affect the conversions, just the values when viewing the exchange rates in the “More Stuff” section.
         
         \(header5)
-        Lastly, to make it easier and quicker to access the built-in functions listed above, FunctionCalc has preset buttons that allow storage of often used functions and conversions for a one-tap operation. Assigning a function to the pre-set button is accomplished by pressing and holding any of the preset buttons.
+        Lastly, to make it easier and quicker to access the built-in functions listed above, FunctionCalc has preset buttons that allow for storage of often used formulas and conversions for a one-tap operation. Assigning a function to the pre-set buttons is accomplished when selecting the function and tapping the "store to preset" button.  You may also update the presets by pressing and holding any of the function preset buttons.
         """
         
         // Creates the text string of what to be displayed in the textView
@@ -143,8 +140,7 @@ struct InformationText {
         let hyperLinkRange          = (textString as NSString).range(of: hyperLinkText)
         let mailToRange             = (textString as NSString).range(of: mailToLinkText)
         let favoriteStarRange       = (textString as NSString).range(of: favoriteStar)
-        let fxImageRange1           = (textString as NSString).range(of: fxSym1)
-        let fxImageRange2           = (textString as NSString).range(of: fxSym2)
+       
         
         // Calculates the length of the body by subtracting the overlength - start
         let bodyLength              = textString.count
@@ -173,8 +169,7 @@ struct InformationText {
         
         // Add Images
         attrText.replaceCharacters(in: favoriteStarRange, with: filledStar)
-        attrText.replaceCharacters(in: fxImageRange1, with: functionSym)
-        attrText.replaceCharacters(in: fxImageRange2, with: functionSym)
+
         return attrText
     }
 }

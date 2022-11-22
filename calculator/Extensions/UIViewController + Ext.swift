@@ -21,4 +21,16 @@ extension UIViewController {
             self.present(alert, animated: true)
         }
     }
+    
+    func presentMultipleChoiceAlertOnMainThread(title: String, message: String, actions:[String:UIAlertAction.Style], style: UIAlertController.Style, completed: @escaping(String) -> Void) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: style)
+        
+        for (action) in actions {
+            alert.addAction(UIAlertAction(title: action.key, style: action.value, handler: { _ in
+                completed(action.key)
+            }))
+        }        
+        present(alert, animated: true)
+    }
 }

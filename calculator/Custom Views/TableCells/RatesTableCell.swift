@@ -33,13 +33,9 @@ class RatesTableCell: UITableViewCell {
         self.rateData                   = rateData
         let rate                        = rateData.rateToBase
         
-        formatter.currencyCode          = rateData.code
-        
         countryCodeLabel.text           = rateData.code
         countryNameLabel.text           = rateData.name
-        
         button.isSelected               = rateData.favorited
-        
         formatter.numberStyle           = .decimal
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2

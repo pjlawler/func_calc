@@ -30,13 +30,11 @@ class FunctionListCell: UITableViewCell {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        titleLabel.text = "Hello there from"
         titleLabel.font = Fonts.functionListCellTitle
         titleLabel.textColor = .label
         titleLabel.numberOfLines = 2
         titleLabel.lineBreakMode = .byTruncatingTail
         
-        symbolLabel.text = "[MORT]"
         symbolLabel.font = Fonts.functionListCellSymbol
         symbolLabel.textColor = .label
         symbolLabel.textAlignment = .center
@@ -63,7 +61,9 @@ class FunctionListCell: UITableViewCell {
     func setCellData(data: FunctionData) {
         
         if data.category == Categories.currency {
-            button.isHidden = false
+            
+            // button hidden until functionality is add to favorite rates from the function selector vc
+            button.isHidden = true
             let isFavorited = model.userDefaults.favorites?.contains(data.symbol) ?? false
             button.isSelected = isFavorited
         } else {

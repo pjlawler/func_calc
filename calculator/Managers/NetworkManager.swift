@@ -11,7 +11,7 @@ struct NetworkManager {
     
     static let shared   = NetworkManager()
     
-    let baseURL = "https://openexchangerates.org/api/latest.json?app_id=731fb56b61af4e7ca81801d474689ab8&base="
+    
     
     enum NetworkError: Error {
         case badURL
@@ -22,8 +22,9 @@ struct NetworkManager {
     
     private init(){}
     
-    func getRates(baseCurrency: String, completed: @escaping (Result<RateData, NetworkError>) -> Void) {
+    func getRatesFromApi(baseCurrency: String, completed: @escaping (Result<RateData, NetworkError>) -> Void) {
         
+        let baseURL = "https://openexchangerates.org/api/latest.json?app_id=731fb56b61af4e7ca81801d474689ab8&base="
         
         let endpoint = baseURL + "\(baseCurrency)"
     

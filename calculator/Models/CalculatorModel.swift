@@ -435,7 +435,7 @@ extension CalculatorModel {
         
         // if the rates need to be updated, it downloads them from through the network manager
         if exchangeRates.isOverHourOld || userDefaults.baseCurrency != exchangeRates.base {
-            network.getRates(baseCurrency: userDefaults.baseCurrency!) { [weak self] result in
+            network.getRatesFromApi(baseCurrency: userDefaults.baseCurrency!) { [weak self] result in
                 
                 guard let self = self else { return }
                 

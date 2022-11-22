@@ -22,6 +22,7 @@ struct LocalStorageManager {
     let rateDataKey = "rates"
     let defaultsKey = "defaults"
     
+    
     func retrieveDefaultData(completed: @escaping (Result<DefaultData, LocalStorageError>) -> Void){
         
         do {
@@ -117,6 +118,4 @@ struct LocalStorageManager {
             return false
         }
     }
-    
-   
 }

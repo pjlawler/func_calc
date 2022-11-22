@@ -11,8 +11,9 @@ import UIKit
 
 class MoreInfoCell: UITableViewCell {
     
-    let itemLabel   = UILabel()
-    let detailLabel = UILabel()
+    let itemLabel   = UILabel(frame: .zero)
+    let button = MoreStuffButton(frame: .zero)
+    
     let model = CalculatorModel.shared
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -24,54 +25,28 @@ class MoreInfoCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    
     func configure() {
-        
-        let padding: CGFloat = 10
-        backgroundColor = .systemBackground
-        
-        itemLabel.font = Fonts.settingsItem
+        button.backgroundColor = .systemIndigo.withAlphaComponent(0.75)
+        button.translatesAutoresizingMaskIntoConstraints = false
         itemLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        detailLabel.font = Fonts.settingsDetail
-        detailLabel.textColor = .link
-        detailLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubviews(itemLabel, detailLabel)
+        contentView.addSubviews(itemLabel, button)
         
         NSLayoutConstraint.activate([
-            itemLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            button.centerYAnchor.constraint(equalTo: centerYAnchor),
             itemLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            detailLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            detailLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -(padding + 25))
+            itemLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 55)
         ])
+        
+        
     }
     
-     func set(data: [String], row: Int) {
-        
-        var detailText: String?
-        var symbol: AccessoryType?
-        
-        switch row {
-        case 0:
-            symbol                  = AccessoryType.detailButton
-        case 1:
-            detailText = "⌫"
-        case 2:
-            detailText              = model.userDefaults.baseCurrency
-            symbol                  = AccessoryType.disclosureIndicator
-        case 3:
-            symbol                  = AccessoryType.detailButton
-           
-        case 4:
-            symbol                  = AccessoryType.disclosureIndicator
-        default:
-            break
-        }
-              
-        itemLabel.text = data[row]
-        detailLabel.text = detailText
-        accessoryType = symbol != nil ? symbol! : .none
+    func set(item: String, buttonTitle: String, tag: Int) {
+        button.setTitle(buttonTitle, for: .normal)
+        itemLabel.text = item
+        button.tag = tag
     }
    
 }
